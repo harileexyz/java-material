@@ -110,102 +110,360 @@ public class LogicExample {
 ```
 
 ---
+---
 
-#### **4. Operator Precedence**
-Operator precedence defines the "pecking order" of operators. It's the set of rules that determines which operation to perform first in a complex expression. Parentheses `()` can always be used to override the default order.
+### **In-Depth Look: Operator Precedence in Java**
 
-**Detailed Example Breakdown:**
+#### **1. What is Operator Precedence? A Deeper Dive**
+
+Think of operator precedence as the "rules of grammar" for mathematical and logical expressions in Java. Just as English grammar dictates the order and meaning of words in a sentence, operator precedence dictates the order in which operations are performed in an expression.
+
+Without these rules, a simple expression like `3 + 5 * 2` would be ambiguous.
+*   Does it mean `(3 + 5) * 2` which equals `16`?
+*   Or does it mean `3 + (5 * 2)` which equals `13`?
+
+To ensure that every Java compiler and virtual machine in the world gets the exact same, predictable result, the language defines a strict hierarchy. In Java's case, multiplication has a higher precedence than addition, so the answer is always **13**. This predictability is fundamental to writing reliable software.
+
+**The Golden Rule: When in Doubt, Use Parentheses `()`**
+Parentheses have the highest precedence. They are your most powerful tool to control the order of evaluation. Even if you know the precedence rules, using parentheses makes your code **unambiguous and infinitely more readable** for other developers (and your future self!).
+
+`int result = 3 + (5 * 2);` // This is much clearer than relying on implicit precedence.
+
+#### **2. The Precedence and Associativity Table (Simplified)**
+
+Here is a simplified but practical table of precedence for the most common operators, from highest to lowest. **Associativity** determines the order for operators at the *same* precedence level.
+
+| Precedence Level | Category              | Operators               | Associativity |
+| :--------------- | :-------------------- | :---------------------- | :------------ |
+| 1 (Highest)      | Parentheses           | `()`                    | N/A           |
+| 2                | Unary                 | `++` `--` `!` `+` `-` (unary) | Right-to-Left |
+| 3                | Multiplicative        | `*` `/` `%`             | Left-to-Right |
+| 4                | Additive              | `+` `-`                 | Left-to-Right |
+| 5                | Relational            | `<` `>` `<=` `>=` `instanceof` | Left-to-Right |
+| 6                | Equality              | `==` `!=`               | Left-to-Right |
+| 7                | Logical AND           | `&&`                    | Left-to-Right |
+| 8                | Logical OR            | `||`                    | Left-to-Right |
+| 9                | Ternary               | `? :`                   | Right-to-Left |
+| 10 (Lowest)      | Assignment            | `=` `+=` `-=` `*=` `/=` | Right-to-Left |
+
+*   **Left-to-Right Associativity:** `10 - 5 + 2` is evaluated as `(10 - 5) + 2`.
+*   **Right-to-Left Associativity:** `a = b = c` is evaluated as `a = (b = c)`.
+
+---
+
+### **Step-by-Step Examples**
+
+Let's break down several examples, from simple to complex, to see these rules in action.
+
+#### **Example 1: Basic Arithmetic Precedence**
+
+**The Code:**
+```java
+int result = 10 + 20 / 5 * 2 - 3;
+```
+**The Question:** What is the value of `result`?
+
+**Step-by-Step Breakdown:**
+1.  The expression has `+`, `/`, `*`, and `-`.
+2.  Looking at the table, Multiplicative operators (`*`, `/`) have higher precedence than Additive operators (`+`, `-`).
+3.  Since `*` and `/` are at the same level, we use their **Left-to-Right** associativity.
+4.  **Step 1 (Division):** The first multiplicative operator from the left is `/`.
+    *   `20 / 5` evaluates to `4`.
+    *   Expression becomes: `10 + 4 * 2 - 3`
+5.  **Step 2 (Multiplication):** The next multiplicative operator is `*`.
+    *   `4 * 2` evaluates to `8`.
+    *   Expression becomes: `10 + 8 - 3`
+6.  Now, we are left with `+` and `-`, which are at the same level. We use their **Left-to-Right** associativity.
+7.  **Step 3 (Addition):** The first additive operator from the left is `+`.
+    *   `10 + 8` evaluates to `18`.
+    *   Expression becomes: `18 - 3`
+8.  **Step 4 (Subtraction):**
+    *   `18 - 3` evaluates to `15`.
+
+**Final Result:** `15`
+
+---
+
+#### **Example 2: The Power of Parentheses**
+
+**The Code:**
+```java
+// Same expression as above, but with parentheses
+int result = (10 + 20) / 5 * 2 - 3;
+```
+**The Question:** How do the parentheses change the outcome?
+
+**Step-by-Step Breakdown:**
+1.  **Step 1 (Parentheses):** Parentheses have the highest precedence. We evaluate the expression inside them first.
+    *   `10 + 20` evaluates to `30`.
+    *   Expression becomes: `30 / 5 * 2 - 3`
+2.  Now we follow the same rules as in Example 1. Multiplicative (`/`, `*`) before Additive (`-`).
+3.  **Step 2 (Division):** Using Left-to-Right associativity for `*` and `/`.
+    *   `30 / 5` evaluates to `6`.
+    *   Expression becomes: `6 * 2 - 3`
+4.  **Step 3 (Multiplication):**
+    *   `6 * 2` evaluates to `12`.
+    *   Expression becomes: `12 - 3`
+5.  **Step 4 (Subtraction):**
+    *   `12 - 3` evaluates to `9`.
+
+**Final Result:** `9` (A completely different result, highlighting the importance of parentheses!)
+
+---
+
+#### **Example 3: Combined Relational and Logical Operators (Your Original Example)**
+
+**The Code:**
 ```java
 int x = 10, y = 5;
 boolean result = x > y && y * 2 == x || x + y == 15;
-// Evaluates to: ( (x > y) && ((y * 2) == x) ) || ( (x + y) == 15 )
 ```
-1.  **Highest Precedence (Multiplication/Addition):**
+**The Question:** What is the boolean value of `result`?
+
+**Step-by-Step Breakdown:**
+1.  **Highest Precedence (Arithmetic):** `*` and `+` are evaluated first.
     *   `y * 2` → `5 * 2` → `10`
     *   `x + y` → `10 + 5` → `15`
     *   Expression becomes: `x > y && 10 == x || 15 == 15`
-
-2.  **Next (Relational Operators):**
+2.  **Next (Relational Operators):** `>`, `==` have higher precedence than `&&` and `||`.
     *   `x > y` → `10 > 5` → `true`
     *   `10 == x` → `10 == 10` → `true`
     *   `15 == 15` → `true`
     *   Expression becomes: `true && true || true`
-
-3.  **Next (Logical AND `&&`):**
+3.  **Next (Logical AND `&&`):** `&&` has higher precedence than `||`.
     *   `true && true` → `true`
     *   Expression becomes: `true || true`
-
 4.  **Last (Logical OR `||`):**
     *   `true || true` → `true`
 
 **Final Result:** `true`
 
 ---
+
+#### **Example 4: Compound Assignment Operators**
+
+This is a common point of confusion. The entire right-hand side of an assignment operator is evaluated *before* the assignment takes place.
+
+**The Code:**
+```java
+int a = 5;
+a *= 2 + 3; // This is equivalent to a = a * (2 + 3);
+```
+**The Question:** What is the final value of `a`?
+
+**Step-by-Step Breakdown:**
+1.  **Rule:** The expression on the right-hand side (`2 + 3`) is evaluated first.
+2.  **Step 1 (Addition):**
+    *   `2 + 3` evaluates to `5`.
+    *   The statement is now effectively `a *= 5;`
+3.  **Step 2 (Compound Assignment):** This is executed as `a = a * 5`.
+    *   `a = 5 * 5`
+    *   `a` becomes `25`.
+
+**Final Result:** `25` (A common mistake is to calculate `5 * 2` first, which would yield 13).
+
 ---
 
-### **Module 2: Control Flow Statements**
+#### **Example 5: The "Tricky" Unary and Short-Circuiting Example**
+
+This example combines unary operators (`++`), which have high precedence, with logical operators, which can short-circuit.
+
+**The Code:**
+```java
+int x = 5, y = 10;
+// Note: x++ (post-increment) vs ++y (pre-increment)
+boolean result = x++ < 5 && ++y > 10;
+System.out.println("Result: " + result);
+System.out.println("Final x: " + x);
+System.out.println("Final y: " + y);
+```
+**The Question:** What are the final values of `result`, `x`, and `y`?
+
+**Step-by-Step Breakdown:**
+1.  The `&&` operator is evaluated from left to right.
+2.  **Evaluate the left side:** `x++ < 5`
+    *   This is a **post-increment**. The *original value* of `x` (which is 5) is used for the comparison first.
+    *   The comparison is `5 < 5`, which is **`false`**.
+    *   *After* the comparison, `x` is incremented to `6`.
+3.  **Short-Circuiting in Action:** The expression is now `false && ...`.
+    *   Since the left-hand side of a logical AND (`&&`) is `false`, the entire expression *must* be `false`, regardless of what the right-hand side is.
+    *   Java is smart and **skips the evaluation of the right-hand side (`++y > 10`) completely**.
+4.  **Final Assignments:**
+    *   `result` is assigned the value `false`.
+    *   `x` became `6` in step 2.
+    *   `y` was **never touched** because its part of the expression was skipped. It remains `10`.
+
+**Final Result:**
+```
+Result: false
+Final x: 6
+Final y: 10
+```
+
+---
+---
+
+### **In-Depth Look: Control Flow Statements in Java**
 
 #### **1. Detailed Description**
-By default, a program executes statements sequentially. Control flow statements are commands that alter this sequence, allowing the program to make decisions, repeat actions, and jump to other parts of the code. Mastering them is essential for creating dynamic and intelligent applications.
+
+Imagine a program's code as a straight road. By default, the computer starts at the beginning and drives straight to the end, executing every instruction in order. Control Flow Statements are like the road signs, traffic lights, and roundabouts on this road. They give you the power to direct the flow of execution.
+*   **Decisions (`if`, `switch`):** These are the forks in the road. "If the weather is sunny, turn left to the beach; otherwise, turn right to the mall."
+*   **Repetition (`for`, `while`):** These are the loops or laps on a racetrack. "Keep running laps until you've completed 5 miles."
+*   **Jumps (`break`, `continue`):** These are the emergency exits or shortcuts. "If you get a flat tire, `break` out of the race. If you just need a water break, `continue` to the next lap after you're done."
+
+Without control flow, programs would be incredibly limited, only able to perform a single, fixed sequence of tasks. Mastering control flow is what allows you to build applications that are responsive, intelligent, and useful.
 
 ---
 
-#### **2. Selection Statements (`if`, `switch`)**
+### **2. Selection Statements: `if` vs. `switch`**
 
-*   **When to use `if-else-if`:** Best for complex conditions involving ranges or multiple unrelated variables. (e.g., `if (score > 90)`, `if (age > 18 && income > 5000)`).
-*   **When to use `switch`:** Best when you are comparing a *single* variable against a list of *discrete, constant* values (integers, strings, enums). It's often cleaner and more efficient than a long `if-else-if` chain for this specific scenario.
+#### **`if-else-if` Ladder: The Flexible Decision-Maker**
 
-**Real-World Example: A Coffee Shop**
-An `if-else-if` ladder can handle complex discount logic: "If the order total is > 500 AND the customer is a premium member...". A `switch` statement can handle the simple choice of coffee size: "case 'S': price = 100; case 'M': price = 150...".
+The `if-else-if` structure is the most versatile tool for decision-making. It evaluates a series of conditions sequentially until one is found to be `true`. Once a condition is met, its corresponding block is executed, and the rest of the chain is skipped.
 
-**Program Example: ATM Menu**
-This is a classic use case for `switch` within a `do-while` loop.
+*   **Strength:** It can handle any type of boolean expression, including range checks (`score > 90`), compound logic (`age > 18 && hasLicense`), and method calls (`user.isAdmin()`).
+*   **Anatomy:**
+    *   `if (...)`: The first check. Mandatory.
+    *   `else if (...)`: Zero or more optional, subsequent checks.
+    *   `else`: An optional "catch-all" block that runs if no preceding condition was true.
+
+**Real-World Example: Grading System**
+A grading system is a perfect example of mutually exclusive ranges, making it ideal for `if-else-if`.
+
+```java
+public class Grader {
+    public static void main(String[] args) {
+        int score = 78;
+        char grade;
+
+        if (score >= 90) {
+            grade = 'A';
+        } else if (score >= 80) {
+            grade = 'B';
+        } else if (score >= 70) {
+            grade = 'C';
+        } else if (score >= 60) {
+            grade = 'D';
+        } else {
+            grade = 'F';
+        }
+
+        System.out.println("A score of " + score + " earns a grade of: " + grade); // Prints 'C'
+    }
+}
+```
+
+---
+
+#### **`switch` Statement: The Efficient Specialist**
+
+The `switch` statement is a specialized tool for comparing a single variable against a list of discrete, constant values. Behind the scenes, the compiler can often optimize a `switch` statement into more efficient bytecode than a long `if-else-if` chain, making it faster for certain scenarios.
+
+*   **Strength:** Clean, readable, and efficient for handling a fixed set of choices like menu options, error codes, or user roles.
+*   **Anatomy:**
+    *   `switch (variable)`: The variable to be tested. Can be `byte`, `short`, `char`, `int`, `String` (since Java 7), or an `enum`.
+    *   `case value:`: A specific constant value to compare against.
+    *   `break;`: **Crucial!** This keyword exits the `switch` block. Without it, execution "falls through" to the next `case`.
+    *   `default:`: An optional block that runs if no `case` matches. It's like the final `else`.
+
+**Common Pitfall: The Missing `break` (Fall-through Behavior)**
+This is a frequent source of bugs. If you forget `break`, the program will execute the code for the matching `case` and then continue executing the code for all subsequent `cases` until it hits a `break` or the end of the `switch` block. Sometimes this is intentional, but usually, it's an error.
+
+**Example Demonstrating Fall-through:**
+```java
+public class DayTypeIdentifier {
+    public static void main(String[] args) {
+        int day = 6; // Saturday
+        String dayType;
+
+        // Using intentional fall-through for grouping cases
+        switch (day) {
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+                dayType = "Weekday";
+                break; // Exit after setting to "Weekday"
+            case 6:
+            case 7:
+                dayType = "Weekend";
+                break; // Exit after setting to "Weekend"
+            default:
+                dayType = "Invalid Day";
+                break;
+        }
+        System.out.println("Day " + day + " is a " + dayType); // Prints "Weekend"
+    }
+}
+```
+In the example above, if `day` is 2, it matches `case 2:`. Since there's no code or `break` there, it "falls through" until it hits the code under `case 5:`, sets `dayType` to "Weekday", and then breaks. This is a powerful way to group related cases.
+
+---
+
+### **3. Iteration Statements: `for`, `while`, and `do-while`**
+
+#### **The `for` Loop: The Determinate Iterator**
+
+The `for` loop is your go-to when you know exactly how many times you need to repeat a task. Its structure is explicitly designed for count-controlled loops.
+
+*   **Anatomy:** `for (initialization; condition; update)`
+    *   **Initialization:** Runs *once* at the very beginning. Used to declare and initialize a loop control variable (e.g., `int i = 0`).
+    *   **Condition:** Checked *before* each iteration. If `true`, the loop body executes. If `false`, the loop terminates.
+    *   **Update:** Runs *after* each iteration. Used to modify the loop control variable (e.g., `i++`, `i--`, `i += 2`).
+
+**Real-World Example: Printing a Calendar Month**
+You know a month like January has exactly 31 days. A `for` loop is perfect for this: `for (int day = 1; day <= 31; day++)`.
+
+**Program Example: Generating a Multiplication Table**
+```java
+public class MultiplicationTable {
+    public static void main(String[] args) {
+        int number = 7;
+        System.out.println("--- Multiplication Table for " + number + " ---");
+
+        // The loop runs exactly 10 times, from i=1 to i=10
+        for (int i = 1; i <= 10; i++) {
+            // printf is used for formatted string output
+            // %d is a placeholder for an integer, \n is a newline
+            System.out.printf("%d x %d = %d\n", number, i, number * i);
+        }
+    }
+}
+```
+
+---
+
+#### **The `while` Loop: The Indeterminate Watcher**
+
+The `while` loop is used when a loop must continue as long as a certain condition remains true, but you don't know in advance when that condition will become false.
+
+*   **Anatomy:** `while (condition)`
+    *   **Condition:** Checked *before* each iteration. If `true`, the loop body executes.
+*   **Critical Responsibility:** You must ensure that something *inside* the loop's body will eventually make the condition `false`. Otherwise, you will create an **infinite loop**.
+
+**Real-World Example: Game Loop**
+A video game's main loop is a `while` loop: `while (gameIsRunning) { processInput(); updateGameLogic(); renderGraphics(); }`. The loop continues indefinitely until the user quits, which sets `gameIsRunning` to `false`.
+
+**Program Example: User Input Validation**
+This example keeps asking the user for input until they provide a valid number within a specific range. The number of attempts is unknown.
+
 ```java
 import java.util.Scanner;
 
-public class AtmMachine {
+public class InputValidator {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        int choice;
-        double balance = 5000.00;
+        int number = -1; // Initialize to a value that fails the condition
 
-        do {
-            System.out.println("\n--- ATM Menu ---");
-            System.out.println("1. Check Balance");
-            System.out.println("2. Withdraw Money");
-            System.out.println("3. Deposit Money");
-            System.out.println("4. Exit");
-            System.out.print("Enter your choice: ");
-            choice = scanner.nextInt();
+        // The loop continues as long as the number is outside the valid range
+        while (number < 1 || number > 10) {
+            System.out.print("Please enter a number between 1 and 10: ");
+            number = scanner.nextInt();
+        }
 
-            switch (choice) {
-                case 1:
-                    System.out.printf("Your current balance is: ₹%.2f\n", balance);
-                    break;
-                case 2:
-                    System.out.print("Enter amount to withdraw: ");
-                    double withdrawAmount = scanner.nextDouble();
-                    if (withdrawAmount > balance) {
-                        System.out.println("Insufficient funds.");
-                    } else {
-                        balance -= withdrawAmount;
-                        System.out.printf("Withdrawal successful. New balance: ₹%.2f\n", balance);
-                    }
-                    break;
-                case 3:
-                    System.out.print("Enter amount to deposit: ");
-                    double depositAmount = scanner.nextDouble();
-                    balance += depositAmount;
-                    System.out.printf("Deposit successful. New balance: ₹%.2f\n", balance);
-                    break;
-                case 4:
-                    System.out.println("Thank you for using our ATM. Goodbye!");
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-            }
-        } while (choice != 4);
-        
+        System.out.println("Thank you! You entered a valid number: " + number);
         scanner.close();
     }
 }
@@ -213,32 +471,46 @@ public class AtmMachine {
 
 ---
 
-#### **3. Iteration Statements (`for`, `while`, `do-while`)**
+#### **The `do-while` Loop: The "Do First, Ask Later" Loop**
 
-*   **When to use `for`:** When you know the exact start, end, and step for the iterations. Perfect for iterating over arrays or a fixed range.
-*   **When to use `while`:** When the loop depends on a condition that can change in unpredictable ways inside the loop. The number of iterations is not known beforehand.
-*   **When to use `do-while`:** Exactly like `while`, but you need to guarantee the loop body runs at least once, regardless of the condition. Perfect for "show menu, then process choice" logic.
+The `do-while` loop is a variant of the `while` loop where the condition is checked *at the end* of the loop's body. This provides a guarantee that the loop will execute **at least once**.
 
-**Real-World Example: Streaming a Video**
-A `for` loop might be used to load the first 10 seconds of video into a buffer (a known number of chunks). A `while` loop would be used for the playback itself: `while (video.isPlaying() && !user.hasPressedStop()) { ... }`.
+*   **Anatomy:** `do { ... } while (condition);`
+*   **Strength:** Perfect for scenarios where you need to perform an action and then decide whether to repeat it, such as displaying a menu. The ATM example from earlier is a prime use case.
 
-**Program Example: Number Reversal (using `while`)**
-This is a classic problem where the number of iterations depends on the number of digits in the input.
+**Real-World Analogy: Free Sample at a Store**
+You get to try the sample (`do` the action) *before* they check if you want to buy more (`while` condition). You are guaranteed to get at least one sample.
+
+**Program Example: A Simple Guessing Game**
+The player must be allowed to make at least one guess.
+
 ```java
-public class ReverseNumber {
+import java.util.Scanner;
+import java.util.Random;
+
+public class GuessingGame {
     public static void main(String[] args) {
-        int number = 12345;
-        int reversedNumber = 0;
-        int originalNumber = number;
+        Scanner scanner = new Scanner(System.in);
+        Random random = new Random();
+        int numberToGuess = random.nextInt(100) + 1; // A random number between 1 and 100
+        int userGuess;
 
-        while (number != 0) {
-            int digit = number % 10; // Get the last digit
-            reversedNumber = reversedNumber * 10 + digit;
-            number /= 10; // Remove the last digit
-        }
+        System.out.println("I'm thinking of a number between 1 and 100. Can you guess it?");
 
-        System.out.println("Original Number: " + originalNumber);
-        System.out.println("Reversed Number: " + reversedNumber);
+        do {
+            System.out.print("Enter your guess: ");
+            userGuess = scanner.nextInt();
+
+            if (userGuess > numberToGuess) {
+                System.out.println("Too high! Try again.");
+            } else if (userGuess < numberToGuess) {
+                System.out.println("Too low! Try again.");
+            }
+
+        } while (userGuess != numberToGuess); // Loop continues until the guess is correct
+
+        System.out.println("Congratulations! You guessed the number: " + numberToGuess);
+        scanner.close();
     }
 }
 ```
