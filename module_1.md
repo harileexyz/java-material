@@ -518,67 +518,252 @@ public class GuessingGame {
 ---
 ---
 
-### **Module 3: Methods, CLI & Varargs**
+### **In-Depth Look: Methods, Command Line Arguments & Varargs**
 
-#### **1. Detailed Description: Methods**
-Methods (or functions) are the verbs of your program; they encapsulate actions. The most important principle they enable is **DRY (Don't Repeat Yourself)**. If you find yourself writing the same block of code in multiple places, it's a strong signal that you should extract it into a method. This makes your code cleaner, easier to debug (you only fix it in one place), and more maintainable.
+### **1. A Deep Dive into Methods (Functions)**
 
-**Real-World Example: Making Tea**
-Instead of listing the steps "boil water, add tea leaves, add milk, add sugar" every time you want tea, you create a "makeTea" method. Now, you can just call `makeTea()` whenever needed. If you decide to change the recipe (e.g., use honey instead of sugar), you only change it inside the `makeTea` method.
+Methods are the fundamental building blocks of behavior in a Java program. They are self-contained units of code that perform a specific task. By breaking a large, complex problem into smaller, manageable, and logical methods, we can write code that is organized, reusable, and easy to understand. This principle is known as **modularity**.
+
+#### **The Anatomy of a Method: A Detailed Breakdown**
+
+Let's dissect the full structure of a method declaration:
+
+`[access_modifier] [static] [final] return_type methodName([parameter_list]) { ... method body ... }`
+
+*(The explanation of each part from the previous response remains the same and would go here.)*
+
+---
+
+### **A Taxonomy of Methods: Understanding the Variations**
+
+Methods can be categorized in several ways. The most common way is based on whether they accept parameters and whether they return a value. This gives us four primary combinations. We will also explore the impact of access modifiers and the `static` keyword with examples for each.
+
+Let's use a `SimpleMath` class to illustrate these concepts.
+
+```java
+// We will build this class step-by-step
+public class SimpleMath {
+    // Methods will be added here
+}
+```
+
+#### **Category 1: No Parameters, No Return Value (`void`)**
+
+These are the simplest methods. They are "fire-and-forget" actions. You call them to perform a task, but they don't require any input and don't send any data back.
+
+*   **When to use:** For simple, fixed actions like printing a welcome message, displaying a menu, or initializing a state to a default value.
+*   **Keyword:** `void`
 
 **Program Example:**
+
 ```java
-public class Utility {
-    // A static method, can be called directly using the class name
-    public static boolean isValidEmail(String email) {
-        if (email == null || email.isEmpty()) {
-            return false;
-        }
-        // A simple check: must contain '@' and '.'
-        return email.contains("@") && email.contains(".");
+public class SimpleMath {
+    // --- Public, No-Param, No-Return ---
+    // Anyone can call this to print a standard header.
+    public void printHeader() {
+        System.out.println("=====================");
+        System.out.println("  Math Operations  ");
+        System.out.println("=====================");
     }
 
-    public static void main(String[] args) {
-        String email1 = "test@example.com";
-        String email2 = "invalid-email";
+    // --- Private, No-Param, No-Return ---
+    // This is an internal helper method, not meant for outside use.
+    private void logOperationStart() {
+        // In a real app, this might write to a log file.
+        System.out.println("[Internal Log]: An operation is about to start...");
+    }
+}
 
-        if (Utility.isValidEmail(email1)) {
-            System.out.println(email1 + " is a valid email format.");
-        }
-        if (!Utility.isValidEmail(email2)) {
-            System.out.println(email2 + " is NOT a valid email format.");
-        }
+// --- Usage ---
+public class Main {
+    public static void main(String[] args) {
+        SimpleMath math = new SimpleMath();
+        math.printHeader(); // LEGAL: Public method can be called from another class.
+        // math.logOperationStart(); // ILLEGAL! Private method cannot be accessed here.
     }
 }
 ```
 
 ---
 
-#### **2. Detailed Description: Command Line Arguments & Varargs**
-*   **Command Line Arguments:** This is the primary way to pass initial configuration or data to a standalone application. Professional tools like `git`, `docker`, and `javac` itself are all driven by command-line arguments (e.g., `git clone <url>`, `javac MyFile.java`).
-*   **Varargs:** This is purely a convenience feature ("syntactic sugar"). It allows you to create more flexible methods without forcing the user to manually create an array. Internally, the compiler converts the sequence of arguments into an array for you.
+#### **Category 2: With Parameters, No Return Value (`void`)**
 
-**Program Example: Flexible Logger**
+These methods take input to customize their action, but they still don't return a result. The input "configures" the behavior.
+
+*   **When to use:** When an action depends on external data, like printing a specific user's name, updating an object's state, or saving data to a specific file path.
+
+**Program Example:**
+
 ```java
-public class Logger {
-    // A method that takes a mandatory message and optional arguments
-    public static void log(String message, Object... args) {
-        // String.format replaces {} with the provided arguments
-        System.out.println("[LOG]: " + String.format(message, args));
+public class SimpleMath {
+    // ... (previous methods) ...
+
+    // --- Public, With-Params, No-Return ---
+    // Takes a number and prints its multiplication table.
+    public void printMultiplicationTable(int number) {
+        System.out.println("--- Table for " + number + " ---");
+        for (int i = 1; i <= 10; i++) {
+            System.out.printf("%d x %d = %d\n", number, i, number * i);
+        }
+    }
+}
+
+// --- Usage ---
+public class Main {
+    public static void main(String[] args) {
+        SimpleMath math = new SimpleMath();
+        math.printMultiplicationTable(7); // Call with an argument
+        math.printMultiplicationTable(12);
+    }
+}
+```
+
+---
+
+#### **Category 3: No Parameters, With a Return Value**
+
+These methods don't take any input, but they produce a result that is sent back to the caller. They are often used to retrieve a calculated value or a piece of state.
+
+*   **When to use:** To get a fixed value (like Pi), a random number, the current system time, or a default configuration object.
+*   **Keyword:** `return` is mandatory.
+
+**Program Example:**
+
+```java
+import java.util.Random;
+
+public class SimpleMath {
+    // ... (previous methods) ...
+
+    // --- Public, No-Params, With-Return ---
+    // Returns a constant value.
+    public double getPi() {
+        return 3.14159;
     }
 
-    public static void main(String[] args) {
-        String user = "Admin";
-        String action = "login";
+    // --- Public, No-Params, With-Return ---
+    // Generates and returns a random integer between 1 and 100.
+    public int getRandomNumber() {
+        Random rand = new Random();
+        return rand.nextInt(100) + 1;
+    }
+}
 
-        // Calling with varargs
-        log("User '{}' performed action '{}'.", user, action);
-        
-        // Calling without varargs
-        log("System is starting up.");
-        
-        // Calling with more varargs
-        log("Data processing complete. Processed {} records in {} ms.", 1000, 150.5);
+// --- Usage ---
+public class Main {
+    public static void main(String[] args) {
+        SimpleMath math = new SimpleMath();
+        double piValue = math.getPi(); // Capture the returned value in a variable
+        System.out.println("Value of Pi is approx: " + piValue);
+
+        int luckyNumber = math.getRandomNumber();
+        System.out.println("Your lucky number for today is: " + luckyNumber);
+    }
+}
+```
+
+---
+
+#### **Category 4: With Parameters, With a Return Value**
+
+These are the most common and powerful types of methods. They take input, process it, and return a result. This represents a true "function" in the mathematical sense: you provide input, and it produces a predictable output.
+
+*   **When to use:** For any calculation or transformation, such as adding two numbers, converting a temperature, checking if a password is valid, or finding an item in a list.
+
+**Program Example:**
+
+```java
+public class SimpleMath {
+    // ... (previous methods) ...
+
+    // --- Public, With-Params, With-Return ---
+    // Takes two integers and returns their sum.
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    // --- Public, With-Params, With-Return ---
+    // Takes a radius and returns the area of a circle.
+    public double calculateCircleArea(double radius) {
+        // We can call another method from within this one!
+        return getPi() * radius * radius;
+    }
+}
+
+// --- Usage ---
+public class Main {
+    public static void main(String[] args) {
+        SimpleMath math = new SimpleMath();
+        int sum = math.add(15, 27); // Pass arguments, capture return value
+        System.out.println("15 + 27 = " + sum);
+
+        double area = math.calculateCircleArea(10.0);
+        System.out.printf("Area of a circle with radius 10.0 is: %.2f\n", area);
+    }
+}
+```
+---
+
+### **The `static` Modifier: Class Methods vs. Instance Methods**
+
+The `static` keyword fundamentally changes a method's nature.
+
+*   **Instance Methods (non-static):**
+    *   **Belong to an object.**
+    *   **Require an object to be created** before they can be called (`math = new SimpleMath(); math.add(..)`).
+    *   Can directly access both instance variables (`this.balance`) and other static/non-static methods of the class.
+    *   **Real-world analogy:** The `accelerate()` method of a `Car`. It only makes sense to accelerate a *specific car*. You can't just "accelerate" in general.
+
+*   **Static Methods:**
+    *   **Belong to the class.**
+    *   **Can be called directly using the class name** (`Math.sqrt(25)`). No object is needed.
+    *   **Cannot directly access non-static (instance) variables or methods.** Why? Because there is no specific object (`this`) to work with. Which car's speed would it access?
+    *   **Real-world analogy:** A utility function like `Math.sqrt()`. The concept of a square root exists independently of any specific object. It's a pure function.
+
+**Program Example: Combining Static and Instance Methods**
+Let's create a `Calculator` class that has both types.
+
+```java
+public class Calculator {
+    // --- Instance variable ---
+    private int operationCount = 0; // Each calculator object tracks its own usage
+
+    // --- Static Method: A pure utility function ---
+    // It doesn't depend on any specific calculator's state.
+    public static int add(int a, int b) {
+        // Cannot access 'operationCount' here. Which object's count would it be?
+        // System.out.println(this.operationCount); // ILLEGAL!
+        return a + b;
+    }
+
+    // --- Instance Method: Operates on a specific object's state ---
+    public int multiply(int a, int b) {
+        // It can access the instance variable 'operationCount' for this object.
+        this.operationCount++; 
+        System.out.println("This calculator has now performed " + this.operationCount + " operations.");
+        return a * b;
+    }
+}
+
+// --- Usage ---
+public class Main {
+    public static void main(String[] args) {
+        // --- Calling the static method ---
+        // No object is needed. Called directly on the class.
+        int sum = Calculator.add(10, 20);
+        System.out.println("Static Add Result: " + sum);
+
+        System.out.println("\n--- Using instance methods ---");
+        // --- Calling instance methods ---
+        // Must create objects first.
+        Calculator calc1 = new Calculator();
+        Calculator calc2 = new Calculator();
+
+        // Each object has its own separate 'operationCount'
+        calc1.multiply(5, 4);  // Prints "performed 1 operations"
+        calc1.multiply(3, 2);  // Prints "performed 2 operations"
+
+        calc2.multiply(7, 3);  // Prints "performed 1 operations"
     }
 }
 ```
@@ -586,67 +771,202 @@ public class Logger {
 ---
 ---
 
-### **Module 4: The Pillars of OOP - Classes, Abstract Classes & Interfaces**
+### **In-Depth Look: Command Line Arguments & Variable-Length Arguments**
 
-#### **1. Detailed Description: Classes and Objects**
-*   **Class:** A **blueprint** that defines the structure and behavior for a type of object. It's a logical construct.
-*   **Object:** A **physical instance** of a class, residing in memory. Each object has its own state (values for its instance variables) but shares the same behavior (methods) defined by the class.
-*   **`new` keyword:** This is the magic wand. When you use `new`, you are telling the JVM to:
-    1.  Allocate memory in the **Heap** for a new object.
-    2.  Run the **constructor** to initialize the object's state.
-    3.  Return a **reference** (memory address) to that new object.
+This module covers two powerful features in Java that allow for flexible input: Command Line Arguments (for passing data *to* the program from the outside) and Varargs (for passing a flexible number of arguments *within* the code to a method).
 
-**Program Example: The `Car` Class**
+### **1. A Deep Dive into Command Line Arguments (CLA)**
+
+#### **What and Why?**
+
+Command Line Arguments (CLA) are the primary mechanism for passing information to a Java application *at the moment of its launch*. They are crucial for creating powerful, configurable, and scriptable command-line tools. Instead of hard-coding values like filenames or settings, you provide them externally, making your program vastly more reusable.
+
+**Real-World Analogy:** Think of a command-line program like a kitchen appliance, say, a microwave.
+*   The program itself (`java MyProgram`) is the microwave.
+*   The command-line arguments are the settings you dial in *before* you press start: `30 seconds`, `high power`.
+*   You don't need a different microwave for every cooking time; you configure the *same* microwave with different inputs for different jobs.
+
+Every professional command-line tool you use, from `git` (`git clone <url>`) to `javac` (`javac MyFile.java`), is driven by command-line arguments.
+
+#### **How it Works: The `String[] args` Array**
+
+When you execute a Java program from your terminal, the Java Virtual Machine (JVM) acts as a pre-processor for the arguments you provide.
+
+**Execution Command:**
+`java FileProcessor report.txt --mode=verbose -c`
+
+**JVM's Actions Before Calling `main`:**
+1.  **Parse:** The JVM reads the string of characters after `java FileProcessor`. It uses spaces as the default delimiter to break the string into pieces.
+2.  **Create Array:** It creates a new `String` array, typically named `args` by convention.
+3.  **Populate Array:** It places each piece into the array as a separate `String` element.
+    *   `args[0]` will contain `"report.txt"`
+    *   `args[1]` will contain `"--mode=verbose"`
+    *   `args[2]` will contain `"-c"`
+4.  **Pass to `main`:** This fully populated `String[]` array is then passed as the sole argument to your `public static void main(String[] args)` method.
+
+**Critical Points to Remember:**
+1.  **Everything is a `String`:** The JVM provides everything as a string. If you pass a number like `10`, it arrives in your program as the string `"10"`. You must manually parse it into a numeric type using methods like `Integer.parseInt()` or `Double.parseDouble()`.
+2.  **Handling Spaces:** If you need to pass an argument that contains spaces, you must enclose it in quotes: `java NamePrinter "Anjali Sharma"`. Without quotes, `"Anjali"` would be `args[0]` and `"Sharma"` would be `args[1]`. With quotes, `"Anjali Sharma"` is a single element in `args[0]`.
+
+#### **Essential Safety Checks: Writing Robust CLA Code**
+
+Production-quality code must be robust. With CLA, this means anticipating user errors.
+
+*   **`ArrayIndexOutOfBoundsException`:** This occurs if you try to access an array element that doesn't exist (e.g., accessing `args[0]` when the user provided no arguments). **Always check `args.length` before accessing elements.**
+*   **`NumberFormatException`:** This occurs if you try to parse a string that isn't a valid number (e.g., `Integer.parseInt("hello")`). **Always wrap parsing logic in a `try-catch` block.**
+
+#### **Program Example: A Simple File Copier Tool**
+
+This program will take two arguments: a source file path and a destination file path.
+
 ```java
-public class Car {
-    // --- Attributes (State) ---
-    private String model;
-    private int year;
-    private double currentSpeed;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
-    // --- Constructor: Special method for creating and initializing objects ---
-    public Car(String model, int year) {
-        this.model = model;
-        this.year = year;
-        this.currentSpeed = 0.0; // Default speed is 0
-        System.out.println("A new car created: " + year + " " + model);
-    }
+public class FileCopier {
+    public static void main(String[] args) {
+        // Safety Check 1: Validate the number of arguments
+        if (args.length != 2) {
+            System.out.println("Error: Invalid number of arguments.");
+            System.out.println("Usage: java FileCopier <source_file> <destination_file>");
+            return; // Exit gracefully
+        }
 
-    // --- Behaviors (Methods) ---
-    public void accelerate(double amount) {
-        this.currentSpeed += amount;
-        System.out.println(this.model + " is now moving at " + this.currentSpeed + " km/h.");
-    }
+        String sourcePath = args[0];
+        String destPath = args[1];
 
-    public void brake() {
-        this.currentSpeed = 0.0;
-        System.out.println(this.model + " has stopped.");
-    }
+        File sourceFile = new File(sourcePath);
+        File destFile = new File(destPath);
 
-    public void displayDetails() {
-        System.out.println("Car Details - Model: " + this.model + ", Year: " + this.year);
+        // Safety Check 2: Validate that the source file exists and is not a directory
+        if (!sourceFile.exists() || !sourceFile.isFile()) {
+            System.out.println("Error: Source file does not exist or is not a regular file.");
+            return;
+        }
+
+        // Use try-with-resources for automatic closing of streams
+        try (FileInputStream in = new FileInputStream(sourceFile);
+             FileOutputStream out = new FileOutputStream(destFile)) {
+
+            byte[] buffer = new byte[1024];
+            int length;
+            // Read from source and write to destination
+            while ((length = in.read(buffer)) > 0) {
+                out.write(buffer, 0, length);
+            }
+            System.out.println("File copied successfully from '" + sourcePath + "' to '" + destPath + "'.");
+
+        } catch (IOException e) {
+            System.out.println("An error occurred during file operation.");
+            e.printStackTrace();
+        }
     }
 }
+```
+**How to Compile and Run:**
+1.  Create a sample file named `source.txt` with some text in it.
+2.  `javac FileCopier.java`
+3.  `java FileCopier source.txt destination.txt`
+4.  Check your directory: a new file `destination.txt` should exist with the same content.
+5.  `java FileCopier source.txt` → `Error: Invalid number of arguments.`
 
-// A separate class to run the program
-public class Garage {
+---
+
+### **2. A Deep Dive into Varargs (Variable-Length Arguments)**
+
+#### **What and Why?**
+
+Varargs, short for variable-length arguments, are a convenience feature (syntactic sugar) that allows a method to accept a variable number of arguments—from zero to many—of the same type. It simplifies the process for the *caller* of the method, as they no longer need to manually create and populate an array to pass multiple values.
+
+**The Problem Varargs Solves:**
+Before varargs, if you wanted a method to sum an unknown quantity of numbers, you had two options:
+1.  Create many overloaded methods: `sum(int a, int b)`, `sum(int a, int b, int c)`, etc. (Not scalable).
+2.  Require the caller to pass an array: `sum(new int[]{a, b, c})`. (Works, but is clunky for the caller).
+
+Varargs provides a clean solution that looks like option 1 but works like option 2.
+
+#### **How it Works: The Magic of the Three Dots (`...`)**
+
+When you declare a method with varargs, you place three dots between the data type and the parameter name.
+
+**Declaration:**
+`public static int sum(int... numbers)`
+
+**What the Compiler Does:**
+Inside the `sum` method, the `numbers` parameter is treated **exactly as if it were an array (`int[]`)**. You can access its `.length` property and iterate over it with a `for` or `for-each` loop.
+
+When a developer calls this method:
+`sum(5, 10, 15);`
+
+The Java compiler intercepts this call and silently transforms it into:
+`sum(new int[]{5, 10, 15});`
+
+This transformation is the "syntactic sugar"—it sweetens the syntax for the developer, making the code cleaner and more readable.
+
+#### **The Golden Rules of Varargs**
+
+1.  **One Per Method:** A method can have **at most one** varargs parameter.
+2.  **Last in Line:** The varargs parameter **must be the last parameter** in the method's signature. This is to avoid ambiguity. The compiler needs to know where the fixed arguments end and the variable arguments begin.
+
+**Correct Usage:**
+`public void formatMessage(String prefix, int... values)`
+
+**Incorrect Usage:**
+`public void wrongMethod(int... values, String prefix)` // ILLEGAL!
+
+#### **Program Example: A Flexible Math Utility**
+
+Let's create a utility that can find the average of any number of `double` values.
+
+```java
+public class MathUtil {
+    // This method calculates the average of any number of provided values.
+    public static double average(double... values) {
+        // Edge Case: What if no numbers are passed? Avoid division by zero.
+        if (values.length == 0) {
+            return 0.0;
+        }
+
+        double sum = 0;
+        // The 'values' parameter acts just like an array here.
+        for (double value : values) {
+            sum += value;
+        }
+
+        return sum / values.length;
+    }
+
     public static void main(String[] args) {
-        // Creating two distinct car objects from the same class blueprint
-        Car car1 = new Car("Honda Civic", 2022);
-        Car car2 = new Car("Ford Mustang", 2023);
+        // --- Calling with multiple arguments ---
+        double avg1 = average(10.0, 20.0, 30.0);
+        System.out.printf("The average of 10, 20, 30 is: %.2f\n", avg1); // Output: 20.00
 
-        car1.displayDetails();
-        car2.displayDetails();
+        // --- Calling with two arguments ---
+        double avg2 = average(5.5, 9.5);
+        System.out.printf("The average of 5.5, 9.5 is: %.2f\n", avg2); // Output: 7.50
 
-        System.out.println("\n--- Driving the cars ---");
-        car1.accelerate(60);
-        car2.accelerate(100);
-
-        car1.brake();
+        // --- Calling with zero arguments ---
+        double avg3 = average();
+        System.out.printf("The average of no numbers is: %.2f\n", avg3); // Output: 0.00
     }
 }
 ```
 
+---
+
+### **3. Command Line Arguments vs. Varargs: A Summary**
+
+| Feature           | Command Line Arguments (`String[] args`)                                | Varargs (`...`)                                                 |
+| :---------------- | :---------------------------------------------------------------------- | :-------------------------------------------------------------- |
+| **Purpose**       | To provide initial configuration/data to an application from the outside. | To provide programming convenience and flexibility for method calls *within* the code. |
+| **Data Source**   | The user running the program from the command line.                     | A developer writing code that calls the method.                 |
+| **Data Type**     | **Always** an array of `String` (`String[]`). Requires manual parsing for other types. | Can be **any data type** (`int...`, `String...`, `Object...`). |
+| **Scope**         | Specific to the `main` method, as the entry point of the application.    | Can be used on **any** method (static or instance).             |
+| **Analogy**       | The settings you dial on a machine *before* you start it.                 | A magic, resizable bag you can put items into when asking a helper to do a task. |
+
+---
 ---
 
 #### **2. Detailed Description: Abstract Classes**
