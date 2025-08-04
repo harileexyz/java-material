@@ -820,57 +820,26 @@ Production-quality code must be robust. With CLA, this means anticipating user e
 This program will take two arguments: a source file path and a destination file path.
 
 ```java
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+public class Greeter {
 
-public class FileCopier {
     public static void main(String[] args) {
-        // Safety Check 1: Validate the number of arguments
-        if (args.length != 2) {
-            System.out.println("Error: Invalid number of arguments.");
-            System.out.println("Usage: java FileCopier <source_file> <destination_file>");
-            return; // Exit gracefully
+
+        // --- Safety Check 1: Check for the mandatory name argument ---
+        if (args.length == 0) {
+            System.out.println("Error: Please provide a name to greet.");
+            System.out.println("Usage: java Greeter <name> [repetitions] [--shout]");
+            return; // Exit the program
         }
 
-        String sourcePath = args[0];
-        String destPath = args[1];
-
-        File sourceFile = new File(sourcePath);
-        File destFile = new File(destPath);
-
-        // Safety Check 2: Validate that the source file exists and is not a directory
-        if (!sourceFile.exists() || !sourceFile.isFile()) {
-            System.out.println("Error: Source file does not exist or is not a regular file.");
-            return;
-        }
-
-        // Use try-with-resources for automatic closing of streams
-        try (FileInputStream in = new FileInputStream(sourceFile);
-             FileOutputStream out = new FileOutputStream(destFile)) {
-
-            byte[] buffer = new byte[1024];
-            int length;
-            // Read from source and write to destination
-            while ((length = in.read(buffer)) > 0) {
-                out.write(buffer, 0, length);
-            }
-            System.out.println("File copied successfully from '" + sourcePath + "' to '" + destPath + "'.");
-
-        } catch (IOException e) {
-            System.out.println("An error occurred during file operation.");
-            e.printStackTrace();
-        }
+        // --- Step 1: Process mandatory arguments ---
+        String name = args[0];
+        String greeting = "Hello, " + name + "!";
     }
 }
 ```
 **How to Compile and Run:**
-1.  Create a sample file named `source.txt` with some text in it.
-2.  `javac FileCopier.java`
-3.  `java FileCopier source.txt destination.txt`
-4.  Check your directory: a new file `destination.txt` should exist with the same content.
-5.  `java FileCopier source.txt` → `Error: Invalid number of arguments.`
+1.  CLA Input: Anjali
+2. Expected Output: Hello, Anjali!`
 
 ---
 
