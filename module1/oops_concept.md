@@ -318,19 +318,146 @@ public class Main {
     }
 }
 ```
+---
+---
 
 #### **3.3. Access Modifiers (The Security Guards)**
 
-Access modifiers are keywords that set the visibility (access level) for classes, fields, and methods.
+Access modifiers in Java are keywords that determine the visibility or "scope" of a class, field (variable), or method. They are the security guards of your code, controlling which parts of your application are allowed to access other parts. Proper use of access modifiers is fundamental to achieving **encapsulation**.
 
-| Modifier    | Same Class | Same Package | Subclass (Different Package) | World (Different Package) |
-| :---------- | :--------: | :----------: | :--------------------------: | :-----------------------: |
-| `public`    |    Yes     |     Yes      |             Yes              |            Yes            |
-| `protected` |    Yes     |     Yes      |             Yes              |            No             |
-| `default`   |    Yes     |     Yes      |              No              |            No             |
-| `private`   |    Yes     |      No      |              No              |            No             |
+Here's the breakdown, from most restrictive to least restrictive:
 
-*   `default` (or package-private): This is the access level if you don't specify any modifier.
+| Modifier    | Same Class | Same Package | Subclass (Different Package) | World (Different Package) | **Analogy** |
+| :---------- | :--------: | :----------: | :--------------------------: | :-----------------------: | :--- |
+| `private`   |    Yes     |      No      |              No              |            No             | Your personal diary. |
+| `default`   |    Yes     |     Yes      |              No              |            No             | A note on the family fridge. |
+| `protected` |    Yes     |     Yes      |             Yes              |            No             | A family heirloom passed down. |
+| `public`    |    Yes     |     Yes      |             Yes              |            Yes            | A public billboard. |
+
+*   **`default` (or package-private):** This is the access level you get if you don't write any modifier at all. It's crucial to remember that this is not the same as `public`.
+
+---
+
+### **A Practical Example to Demonstrate Modifiers**
+
+To properly demonstrate the package-level restrictions, we need to imagine our code is organized into packages. Let's assume we have two packages:
+1.  **`com.school.staff`**: A package for staff-related classes.
+2.  **`com.school.students`**: A package for student-related classes.
+
+#### **File 1: The `Teacher` Class (in package `com.school.staff`)**
+
+This class will contain members with all four access modifiers.
+
+```java
+// File: com/school/staff/Teacher.java
+package com.school.staff;
+
+public class Teacher {
+    // 1. PUBLIC: Accessible from anywhere.
+    public String publicName = "Mr. Sharma";
+
+    // 2. PROTECTED: Accessible within the package and by subclasses outside the package.
+    protected String protectedSubject = "Mathematics";
+
+    // 3. DEFAULT: Accessible only within the 'com.school.staff' package.
+    String defaultLockerId = "Locker-123";
+
+    // 4. PRIVATE: Accessible ONLY within this Teacher class.
+    private double privateSalary = 50000.0;
+
+    // A public method to demonstrate access within the same class.
+    public void displayTeacherInfo() {
+        System.out.println("--- Accessing from within the Teacher class ---");
+        System.out.println("Public Name: " + this.publicName);         // Yes
+        System.out.println("Protected Subject: " + this.protectedSubject); // Yes
+        System.out.println("Default Locker ID: " + this.defaultLockerId);  // Yes
+        System.out.println("Private Salary: " + this.privateSalary);       // Yes (This is the ONLY place this is legal)
+    }
+}
+```
+
+#### **File 2: The `Principal` Class (in the SAME package)**
+
+This class is also in `com.school.staff`, so it can access `public`, `protected`, and `default` members of `Teacher`.
+
+```java
+// File: com/school/staff/Principal.java
+package com.school.staff;
+
+public class Principal {
+    public void checkTeacherDetails() {
+        Teacher teacher = new Teacher();
+        System.out.println("\n--- Accessing from Principal class (Same Package) ---");
+        
+        // Accessing Teacher's members:
+        System.out.println("Teacher's Public Name: " + teacher.publicName);       // Yes
+        System.out.println("Teacher's Protected Subject: " + teacher.protectedSubject); // Yes
+        System.out.println("Teacher's Default Locker ID: " + teacher.defaultLockerId); // Yes
+        
+        // System.out.println("Teacher's Private Salary: " + teacher.privateSalary); // ERROR! Cannot access private member.
+    }
+}
+```
+
+#### **File 3: The `HeadStudent` Class (in a DIFFERENT package, but is a subclass)**
+
+This class is in `com.school.students` but it `extends Teacher`. This special relationship gives it access to `protected` members.
+
+```java
+// File: com/school/students/HeadStudent.java
+package com.school.students;
+
+import com.school.staff.Teacher; // Must import the Teacher class
+
+// HeadStudent is a subclass of Teacher.
+public class HeadStudent extends Teacher {
+    public void checkMentorDetails() {
+        System.out.println("\n--- Accessing from HeadStudent subclass (Different Package) ---");
+
+        // Accessing inherited Teacher members:
+        System.out.println("Mentor's Public Name: " + this.publicName);          // Yes
+        System.out.println("Mentor's Protected Subject: " + this.protectedSubject);  // Yes (This is the key for 'protected')
+        
+        // System.out.println("Mentor's Default Locker ID: " + this.defaultLockerId);  // ERROR! 'default' is not accessible outside its package.
+        // System.out.println("Mentor's Private Salary: " + this.privateSalary);      // ERROR! Cannot access private member.
+    }
+}
+```
+
+#### **File 4: The `RegularStudent` Class (in a DIFFERENT package, NOT a subclass)**
+
+This class is completely unrelated. It's in a different package and does not extend `Teacher`. It can only see what is fully `public`.
+
+```java
+// File: com/school/students/RegularStudent.java
+package com.school.students;
+
+import com.school.staff.Teacher; // Must import the Teacher class
+
+public class RegularStudent {
+    public void seePublicInfo() {
+        Teacher teacher = new Teacher();
+        System.out.println("\n--- Accessing from RegularStudent class (Different Package) ---");
+
+        // Accessing Teacher's members:
+        System.out.println("Teacher's Public Name: " + teacher.publicName);         // Yes (Only public is visible)
+        
+        // System.out.println("Teacher's Protected Subject: " + teacher.protectedSubject); // ERROR! Not a subclass.
+        // System.out.println("Teacher's Default Locker ID: " + teacher.defaultLockerId);  // ERROR! Not in the same package.
+        // System.out.println("Teacher's Private Salary: " + teacher.privateSalary);      // ERROR! Cannot access private member.
+    }
+}
+```
+
+### **Summary of the Example**
+
+*   **`private`** (`privateSalary`): Only the `Teacher` class itself could access this. This is perfect for sensitive data that should never be directly touched from the outside.
+*   **`default`** (`defaultLockerId`): The `Principal` could see this because they are both in the `com.school.staff` package (like office colleagues). The students, being in a different package, could not.
+*   **`protected`** (`protectedSubject`): The `Principal` could see it (same package). The `HeadStudent` could also see it, even from a different package, because of the `extends Teacher` relationship (the family heirloom rule). The `RegularStudent` could not.
+*   **`public`** (`publicName`): Everyone, everywhere, could see the teacher's name. It's public information.
+
+---
+---
 
 #### **3.4. The `this` Keyword (The Self-Reference)**
 
