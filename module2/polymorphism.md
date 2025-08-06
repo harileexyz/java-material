@@ -102,46 +102,138 @@ When you call the overridden method on an object, the Java Virtual Machine (JVM)
     *   A `Cat` subclass **overrides** `speak()` to print "Meow!".
     If you have a variable `Animal myPet = new Dog();`, calling `myPet.speak()` will execute the `Dog`'s version at runtime.
 
-**Program Example: The `Polygon` Hierarchy**
+---
+
+### **Complete Polymorphism Example: The Notification System (Single File)**
+
 ```java
-class Polygon {
-    public void render() {
-        System.out.println("Rendering a generic Polygon.");
+// Main.java - All classes in one file for easy testing.
+
+// --- 1. The Base Class (The "Superclass") ---
+// Represents the general concept of a notification.
+class Notification {
+    // 'protected' means this field is accessible by this class and any subclasses.
+    protected String recipient;
+
+    public Notification(String recipient) {
+        this.recipient = recipient;
+    }
+
+    // A generic method that provides default behavior.
+    // Subclasses are expected to override this.
+    public void send() {
+        System.out.println("------------------------------------");
+        System.out.println("Sending a GENERIC notification to " + recipient);
+        System.out.println("------------------------------------");
     }
 }
 
-class Circle extends Polygon {
-    @Override // Good practice to use this annotation to prevent mistakes
-    public void render() {
-        System.out.println("Rendering a Circle: O");
-    }
-}
 
-class Square extends Polygon {
+// --- 2. The Subclasses (Provide Specific Implementations) ---
+
+// EmailNotification "is-a" Notification. It extends the base class.
+class EmailNotification extends Notification {
+
+    public EmailNotification(String emailAddress) {
+        // 'super()' calls the constructor of the parent class (Notification)
+        // to set the recipient field.
+        super(emailAddress); 
+    }
+
+    // This method OVERRIDES the parent's send() method.
+    // The @Override annotation is a good practice to ensure you are correctly overriding.
     @Override
-    public void render() {
-        System.out.println("Rendering a Square: []");
+    public void send() {
+        System.out.println("------------------------------------");
+        System.out.println("Sending Email Notification...");
+        System.out.println("Recipient: " + this.recipient);
+        System.out.println("Message: Your order has been shipped!");
+        System.out.println("Email sent successfully.");
+        System.out.println("------------------------------------");
     }
 }
 
-public class DrawingApp {
-    // This method is polymorphic. It can accept ANY object that IS-A Polygon.
-    public static void drawShape(Polygon p) {
-        p.render(); // The magic happens here!
+// SmsNotification "is-a" Notification.
+class SmsNotification extends Notification {
+    
+    public SmsNotification(String phoneNumber) {
+        super(phoneNumber);
     }
+
+    // This method also OVERRIDES the parent's send() method with its own logic.
+    @Override
+    public void send() {
+        System.out.println("------------------------------------");
+        System.out.println("Sending SMS Notification...");
+        System.out.println("To Phone: " + this.recipient);
+        System.out.println("Msg: Your order has shipped!");
+        System.out.println("SMS sent successfully.");
+        System.out.println("------------------------------------");
+    }
+}
+
+
+// --- 3. The Polymorphic Class ---
+// This class contains a method that works with the base Notification type.
+class NotificationSender {
+    
+    // This method demonstrates polymorphism.
+    // It accepts ANY object that is a subclass of Notification.
+    public void sendNotification(Notification notification) {
+        // The magic happens here!
+        // At runtime, Java checks the ACTUAL object type that 'notification'
+        // is pointing to and calls the appropriate overridden 'send()' method.
+        notification.send();
+    }
+}
+
+
+// --- 4. The Main Class to Run the Demonstration ---
+// The public class must match the filename (e.g., Main.java).
+public class Main {
 
     public static void main(String[] args) {
-        Polygon poly = new Polygon();
-        Circle circ = new Circle();
-        Square squa = new Square();
+        
+        // Create an object that can send notifications.
+        NotificationSender sender = new NotificationSender();
 
-        drawShape(poly); // Calls Polygon's render()
-        drawShape(circ); // Calls Circle's render()
-        drawShape(squa); // Calls Square's render()
+        // Create specific notification objects. Note that we are using the
+        // parent class 'Notification' as the reference type. This is a common practice.
+        Notification email = new EmailNotification("student@btech.edu");
+        Notification sms = new SmsNotification("+91-9876543210");
+        Notification generic = new Notification("some_user"); // An object of the parent class itself.
+
+        System.out.println("### Dispatching All Notifications ###");
+
+        // We pass different types of objects to the SAME method.
+        // The method behaves differently depending on the object it receives.
+        // This is polymorphism in action.
+        
+        sender.sendNotification(email);   // Will execute the code inside EmailNotification.send()
+        sender.sendNotification(sms);     // Will execute the code inside SmsNotification.send()
+        sender.sendNotification(generic); // Will execute the code inside the base Notification.send()
     }
 }
 ```
-
+### **Expected Output**
+```
+### Dispatching All Notifications ###
+------------------------------------
+Sending Email Notification...
+Recipient: student@btech.edu
+Message: Your order has been shipped!
+Email sent successfully.
+------------------------------------
+------------------------------------
+Sending SMS Notification...
+To Phone: +91-9876543210
+Msg: Your order has shipped!
+SMS sent successfully.
+------------------------------------
+------------------------------------
+Sending a GENERIC notification to some_user
+------------------------------------
+```
 ---
 #### **1.3. Using Objects as Parameters and Return Types**
 
