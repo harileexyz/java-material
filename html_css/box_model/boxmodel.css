@@ -1,0 +1,18 @@
+.action-button {
+    /* --- Content is the text "Sign Up" --- */
+
+    /* Padding: Adds space INSIDE the button, making it look bigger and more clickable. */
+    padding: 15px 25px;
+
+    /* Border: A line around the padding. */
+    border: 2px solid #5cb85c;
+    border-radius: 5px;
+
+    /* Margin: Adds space OUTSIDE the button, pushing them away from each other. */
+    margin: 10px;
+
+    background-color: #5cb85c;
+    color: white;
+    font-size: 16px;
+    cursor: pointer; /* Changes the mouse to a pointer on hover */
+}

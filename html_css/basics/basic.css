@@ -1,0 +1,9 @@
+/* This is a CSS comment. */
+
+/* The 'body' selector targets the entire visible content of the page. */
+body {
+    font-family: Arial, sans-serif; /* Sets a clean, readable font */
+    line-height: 1.6; /* Increases space between lines of text */
+    background-color: #f4f4f4; /* A light grey background color */
+    color: #333; /* A dark grey for the text, easier to read than pure black */
+  }

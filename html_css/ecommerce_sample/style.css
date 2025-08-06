@@ -1,0 +1,217 @@
+/* --- General Body and Font Styling (Module 1) --- */
+body {
+    margin: 0; /* Removes default browser margin */
+    font-family: 'Roboto', sans-serif; /* A clean, modern font */
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+h1, h2, h3 {
+    font-family: 'Montserrat', sans-serif; /* A bold font for headings */
+}
+
+/* --- Main Header Styling (Flexbox) --- */
+.main-header {
+    background-color: #ffffff;
+    padding: 15px 5%; /* Use percentage for responsive padding */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    position: sticky; /* Makes the header stick to the top on scroll */
+    top: 0;
+    z-index: 100;
+
+    /* FLEXBOX: Aligns the logo and nav bar */
+    display: flex;
+    justify-content: space-between; /* Pushes logo and nav to opposite ends */
+    align-items: center; /* Vertically centers them */
+}
+
+.logo {
+    font-size: 1.5rem; /* rem units are great for accessibility */
+    font-weight: 700;
+}
+
+.main-nav a {
+    text-decoration: none;
+    color: #555;
+    font-weight: 500;
+    margin: 0 15px; /* Box Model: Adds space between nav links */
+    padding: 5px 0;
+    border-bottom: 2px solid transparent; /* Creates space for hover effect */
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+}
+
+.main-nav a:hover {
+    color: #007bff;
+    border-bottom-color: #007bff; /* Visual feedback on hover */
+}
+
+.nav-button {
+    background-color: #007bff;
+    color: white !important; /* Use !important to override other link styles */
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+.nav-button:hover {
+    background-color: #0056b3;
+    border-bottom-color: transparent !important;
+}
+
+/* --- Hero Section Styling --- */
+.hero {
+    background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://via.placeholder.com/1500x500.png?text=Summer+Looks');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    text-align: center;
+    padding: 100px 20px; /* Box Model: Creates space inside the hero section */
+}
+
+.cta-button {
+    background-color: #ffc107;
+    color: #333;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.cta-button:hover {
+    transform: scale(1.05); /* Slightly enlarges the button on hover */
+}
+
+/* --- Product Section and Grid Styling (Flexbox) --- */
+.product-section {
+    padding: 50px 5%;
+    text-align: center;
+}
+
+.product-grid {
+    /* FLEXBOX: This creates the responsive grid */
+    display: flex;
+    flex-wrap: wrap; /* Allows items to wrap onto the next line on smaller screens */
+    justify-content: center; /* Centers the items in the container */
+    gap: 30px; /* Modern way to add space between flex items */
+}
+
+/* --- Product Card Styling (Selectors, Box Model, Nested Flexbox) --- */
+.product-card {
+    background-color: white;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    width: 300px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08); /* Box Model: Adds depth */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative; /* Needed for the "Best Seller" badge */
+    overflow: hidden; /* Ensures child elements respect the border-radius */
+    
+    /* FLEXBOX: A column layout for the card's content */
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card:hover {
+    transform: translateY(-5px); /* Lifts the card up on hover */
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.product-image {
+    width: 100%;
+    height: 250px; /* Fixed height for uniform look */
+    object-fit: cover; /* Ensures image covers the area without distortion */
+}
+
+.product-info {
+    padding: 20px; /* Box Model: Internal spacing */
+    text-align: left;
+    flex-grow: 1; /* This makes the info section expand to fill available space */
+}
+
+.product-title {
+    margin: 0 0 5px 0;
+}
+
+.product-category {
+    color: #777;
+    font-size: 0.9rem;
+    margin: 0 0 15px 0;
+}
+
+.product-footer {
+    padding: 20px;
+    border-top: 1px solid #f0f0f0;
+
+    /* FLEXBOX: A nested row layout for price and button */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.product-price {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.add-to-cart-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.add-to-cart-btn:hover {
+    background-color: #218838;
+}
+
+/* --- Badge for Featured Items (Class Selector) --- */
+.product-card.featured .badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background-color: #dc3545;
+    color: white;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+/* --- Footer Styling (Flexbox) --- */
+.site-footer {
+    background-color: #343a40;
+    color: #f8f9fa;
+    padding: 40px 5%;
+    
+    /* FLEXBOX: Creates the columns */
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap; /* Allows columns to stack on small screens */
+    gap: 20px;
+}
+
+.footer-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-column h4 {
+    margin-bottom: 15px;
+    color: #ffc107;
+}
+
+.footer-column a {
+    color: #ced4da;
+    text-decoration: none;
+    margin-bottom: 10px;
+    transition: color 0.2s;
+}
+
+.footer-column a:hover {
+    color: white;
+}

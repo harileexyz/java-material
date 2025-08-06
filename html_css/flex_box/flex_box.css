@@ -1,0 +1,39 @@
+.main-header {
+    background-color: #fff;
+    padding: 10px 40px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+    /* 1. This makes the header a flex container */
+    display: flex;
+
+    /* 2. This distributes space between its children (the logo and the nav) */
+    justify-content: space-between;
+
+    /* 3. This vertically centers the logo and nav items */
+    align-items: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* We make the navigation a flex container too! */
+.main-nav {
+    display: flex;
+    align-items: center; /* Vertically align all links */
+}
+
+.main-nav a {
+    text-decoration: none;
+    color: #555;
+    padding: 10px 15px;
+    font-weight: bold;
+}
+
+.main-nav .nav-button {
+    background-color: #4a90e2;
+    color: white;
+    border-radius: 5px;
+    margin-left: 15px; /* Add some space to its left */
+}

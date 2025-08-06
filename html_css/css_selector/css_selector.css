@@ -1,0 +1,19 @@
+/* Type Selector: Styles all articles. Not very specific. */
+article {
+    border: 1px solid #ddd; /* A light grey border */
+    margin-bottom: 15px; /* Adds space below each article */
+}
+
+/* Class Selector: A reusable style for all products. */
+.product {
+    background-color: #ffffff; /* A white background */
+    padding: 20px;
+    border-radius: 8px; /* Gives the products rounded corners */
+}
+
+/* ID Selector: A unique style for ONE specific element. */
+#featured-product {
+    border-color: #4a90e2; /* A nice blue to make it stand out */
+    border-width: 2px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Adds a subtle shadow for a "lifted" effect */
+}
