@@ -242,48 +242,146 @@ In Java, objects can be passed to and returned from methods just like primitive 
 **Program Example: A `Box` Factory**
 This example shows a method that takes two `Box` objects as parameters and returns a new `Box` object that is a combination of the two.
 
+---
+
+### **Complete Example: Student Enrollment System (Single File)**
+
 ```java
-class Box {
-    int width;
-    int height;
+// Main.java - All classes in one file for easy testing.
 
-    public Box(int width, int height) {
-        this.width = width;
-        this.height = height;
-    }
+// --- 1. The Supporting Data Classes ---
 
-    public void display() {
-        System.out.println("Box [Width=" + width + ", Height=" + height + "]");
+// Represents a single student with basic details.
+class Student {
+    String studentId;
+    String name;
+
+    public Student(String studentId, String name) {
+        this.studentId = studentId;
+        this.name = name;
     }
 }
 
-class BoxFactory {
-    // This method TAKES two Box objects as parameters
-    // and RETURNS a new Box object.
-    public Box combineBoxes(Box boxA, Box boxB) {
-        // Create a new box whose dimensions are the sum of the input boxes
-        int newWidth = boxA.width + boxB.width;
-        int newHeight = boxA.height + boxB.height;
+// Represents a single course with a course code and title.
+class Course {
+    String courseCode;
+    String title;
+
+    public Course(String courseCode, String title) {
+        this.courseCode = courseCode;
+        this.title = title;
+    }
+}
+
+// --- 2. The Result Class ---
+
+// Represents the successful enrollment of a student in a course.
+// This is the object that will be returned by our main method.
+class Enrollment {
+    // It holds references to the Student and Course objects it links together.
+    Student student;
+    Course course;
+    java.util.Date enrollmentDate; // We can add extra info to the result object.
+
+    public Enrollment(Student student, Course course) {
+        this.student = student;
+        this.course = course;
+        this.enrollmentDate = new java.util.Date(); // Record the current date and time
+    }
+
+    // A method to display the details of this specific enrollment.
+    public void displayConfirmation() {
+        System.out.println("----- Enrollment Confirmation -----");
+        System.out.println("Student ID:   " + student.studentId);
+        System.out.println("Student Name: " + student.name);
+        System.out.println("Course:       " + course.title + " (" + course.courseCode + ")");
+        System.out.println("Date:         " + enrollmentDate);
+        System.out.println("-----------------------------------");
+    }
+}
+
+// --- 3. The Utility Class with the Core Logic ---
+
+// This class contains the business logic for handling enrollments.
+class EnrollmentSystem {
+
+    // This method TAKES a Student object and a Course object as parameters.
+    // It RETURNS a new Enrollment object.
+    public Enrollment enrollStudent(Student studentToEnroll, Course courseToEnroll) {
+        // In a real system, you would have more logic here:
+        // - Check if the student is eligible for the course.
+        // - Check if the course has available seats.
+        // - Process payment, etc.
         
-        Box combinedBox = new Box(newWidth, newHeight);
-        return combinedBox;
+        System.out.println("\n>>> Processing enrollment for '" + studentToEnroll.name + "' in '" + courseToEnroll.title + "'...");
+
+        // If all checks pass, create a new Enrollment object.
+        Enrollment newEnrollment = new Enrollment(studentToEnroll, courseToEnroll);
+        
+        System.out.println("...Enrollment successful!");
+        
+        // Return the newly created confirmation object.
+        return newEnrollment;
     }
 }
 
+
+// --- 4. The Main Class to Run the Demonstration ---
+// The public class must match the filename (e.g., Main.java).
 public class Main {
+
     public static void main(String[] args) {
-        Box b1 = new Box(10, 5);
-        Box b2 = new Box(20, 15);
         
-        BoxFactory factory = new BoxFactory();
+        // --- Step 1: Create the initial data objects ---
+        Student student1 = new Student("BTECH-CS-101", "Anjali Sharma");
+        Course javaCourse = new Course("CS201", "Object-Oriented Programming with Java");
         
-        // Pass objects b1 and b2 to the method
-        Box largeBox = factory.combineBoxes(b1, b2);
+        // Create the system that will perform the action.
+        EnrollmentSystem system = new EnrollmentSystem();
         
-        System.out.println("Combined Box dimensions:");
-        largeBox.display();
+        // --- Step 2: Call the method, passing objects as arguments ---
+        // The 'enrollmentConfirmation' variable will hold the object that is returned by the method.
+        Enrollment enrollmentConfirmation1 = system.enrollStudent(student1, javaCourse);
+        
+        // --- Step 3: Use the returned object ---
+        // We can now call methods on the object that was returned to us.
+        // It's good practice to check if the returned object is not null.
+        if (enrollmentConfirmation1 != null) {
+            enrollmentConfirmation1.displayConfirmation();
+        }
+
+        // --- Let's do another example to show reusability ---
+        Student student2 = new Student("BTECH-ME-102", "Vikram Singh");
+        Course dbCourse = new Course("CS305", "Database Management Systems");
+
+        Enrollment enrollmentConfirmation2 = system.enrollStudent(student2, dbCourse);
+        if (enrollmentConfirmation2 != null) {
+            enrollmentConfirmation2.displayConfirmation();
+        }
     }
 }
+```
+
+### **Expected Output**
+(The exact date and time will vary)
+```
+>>> Processing enrollment for 'Anjali Sharma' in 'Object-Oriented Programming with Java'...
+...Enrollment successful!
+----- Enrollment Confirmation -----
+Student ID:   BTECH-CS-101
+Student Name: Anjali Sharma
+Course:       Object-Oriented Programming with Java (CS201)
+Date:         [Current Date and Time, e.g., Sat Nov 05 14:30:00 IST 2023]
+-----------------------------------
+
+>>> Processing enrollment for 'Vikram Singh' in 'Database Management Systems'...
+...Enrollment successful!
+----- Enrollment Confirmation -----
+Student ID:   BTECH-ME-102
+Student Name: Vikram Singh
+Course:       Database Management Systems (CS305)
+Date:         [Current Date and Time, e.g., Sat Nov 05 14:30:00 IST 2023]
+-----------------------------------
 ```
 
 ---
