@@ -1,0 +1,60 @@
+/* Flexbox Examples */
+
+/* Basic Flex Container */
+.flex-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+
+/* Flex Direction */
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Justify Content Examples */
+.justify-start {
+    justify-content: flex-start;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+/* Align Items Examples */
+.align-center {
+    align-items: center;
+}
+
+.align-stretch {
+    align-items: stretch;
+}
+
+/* Flex Items */
+.flex-item {
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+
+/* Flex Grow/Shrink/Basis */
+.flex-grow {
+    flex: 1;  /* Same as flex-grow: 1 */
+}
+
+.flex-basis {
+    flex-basis: 200px;
+}
+
+/* Responsive Flex Container */
+@media (max-width: 768px) {
+    .flex-container {
+        flex-direction: column;
+    }
+} 

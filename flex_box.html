@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Flexbox</title>
+    <link rel="stylesheet" href="flex_style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Flexbox Examples</h1>
+
+        <section>
+            <h2>Basic Flex Container</h2>
+            <div class="flex-container">
+                <div class="flex-item">Item 1</div>
+                <div class="flex-item">Item 2</div>
+                <div class="flex-item">Item 3</div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Flex Direction: Column</h2>
+            <div class="flex-container flex-column">
+                <div class="flex-item">Column 1</div>
+                <div class="flex-item">Column 2</div>
+                <div class="flex-item">Column 3</div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Justify Content Examples</h2>
+            <div class="flex-container justify-between">
+                <div class="flex-item">Space</div>
+                <div class="flex-item">Between</div>
+                <div class="flex-item">Items</div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Flex Grow Example</h2>
+            <div class="flex-container">
+                <div class="flex-item flex-grow">Grows</div>
+                <div class="flex-item flex-basis">Fixed</div>
+                <div class="flex-item flex-grow">Grows</div>
+            </div>
+        </section>
+    </div>
+</body>
+</html> 

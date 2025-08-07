@@ -1,0 +1,57 @@
+/* Basic CSS Selectors and Properties */
+
+/* Element Selector */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Class Selector */
+.container {
+    max-width: 1200px;
+    padding: 0 15px;
+}
+
+/* ID Selector */
+#main-header {
+    background-color: #f4f4f4;
+    padding: 1rem;
+}
+
+/* Descendant Selector */
+.nav-list li {
+    list-style: none    ;
+}
+
+/* Multiple Selectors */
+h1, h2, h3 {
+    color: #333;
+}
+
+/* Combining Selectors */
+.article-card p {
+    margin-bottom: 1rem;
+}
+
+/* Pseudo-classes */
+a:hover {
+    color: #ff6b6b;
+}
+
+.button:active {
+    transform: rotate(180deg);
+}
+
+/* Pseudo-elements */
+p::first-letter {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+/* Attribute Selectors */
+input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ddd;
+} 
