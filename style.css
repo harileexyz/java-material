@@ -40,6 +40,10 @@ a:hover {
     color: #ff6b6b;
 }
 
+li:hover {
+    transform: rotate(180deg);
+
+}
 .button:active {
     transform: rotate(180deg);
 }

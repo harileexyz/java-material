@@ -485,14 +485,190 @@ public class Main {
         C c_object = new C();
     }
 }
+
+---
+---
+
+### **(Insert this as Section 7 in the Inheritance notes)**
+
+### **7. Dynamic Method Dispatch: The Engine of Polymorphism**
+
+**Dynamic Method Dispatch** is the mechanism that makes runtime polymorphism work in Java. It is the process by which a call to an overridden method is resolved at **runtime**, rather than at compile-time. This is why runtime polymorphism is also known as *dynamic binding*.
+
+#### **How it Works**
+
+When you have a superclass reference variable pointing to a subclass object, the compiler and the JVM perform different checks:
+
+1.  **Compile-time Check:** The compiler only looks at the **reference type** (the superclass). It checks if the method you are calling *exists* in that superclass. If the method doesn't exist in the superclass, you will get a compile-time error, even if the method exists in the subclass object it's pointing to. The compiler's job is simply to say, "Yes, a `Vehicle` is capable of performing this action."
+
+2.  **Runtime Check (The "Dispatch"):** At runtime, the Java Virtual Machine (JVM) looks at the **actual object** that the reference is pointing to. It checks if *that specific object's class* has an overridden version of the method.
+    *   If **yes**, the JVM calls the **overridden method** from the subclass.
+    *   If **no**, the JVM walks up the inheritance chain and calls the method from the **superclass**.
+
+This runtime decision-making process is called Dynamic Method Dispatch.
+
+**Analogy: A Universal Remote Control**
+Imagine you have a universal remote control labeled "Entertainment Device" (the superclass reference, `Device`).
+*   You can point this remote at a TV, a Blu-ray Player, or a Sound System (subclass objects).
+*   When you press the "Power" button (call the `powerOn()` method), the compiler just checks, "Does an Entertainment Device have a Power button?" Yes, it does. So the code compiles.
+*   At runtime, when you actually press the button, the remote sends a specific signal depending on what it's pointing at. If it's pointing at the **TV**, it sends the TV's power-on signal. If it's pointing at the **Sound System**, it sends the Sound System's unique power-on signal. The specific action is "dispatched" based on the actual object.
+
+#### **Program Example: A Clear Demonstration**
+
+Let's use a simple `Animal` hierarchy to see this in action.
+
+```java
+class Animal {
+    public void speak() {
+        System.out.println("The animal makes a generic sound.");
+    }
+}
+
+class Dog extends Animal {
+    @Override
+    public void speak() {
+        System.out.println("The dog barks: Woof! Woof!");
+    }
+
+    public void fetch() { // A method unique to Dog
+        System.out.println("The dog is fetching a ball.");
+    }
+}
+
+class Cat extends Animal {
+    @Override
+    public void speak() {
+        System.out.println("The cat meows: Meow!");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        // 1. A superclass reference can hold a subclass object.
+        Animal myPet; 
+
+        // 2. Point the reference to a Dog object.
+        myPet = new Dog();
+        
+        // DYNAMIC METHOD DISPATCH IN ACTION:
+        // Compiler check: Does the 'Animal' class have a 'speak()' method? Yes. Code compiles.
+        // Runtime check: What object is 'myPet' pointing to? A Dog.
+        // JVM executes the Dog's overridden speak() method.
+        myPet.speak(); // Output: The dog barks: Woof! Woof!
+
+        // myPet.fetch(); // COMPILE ERROR! The compiler only sees the 'Animal' reference type,
+                         // and the Animal class does not have a 'fetch()' method.
+
+        // 3. Now, point the SAME reference to a Cat object.
+        myPet = new Cat();
+
+        // DYNAMIC METHOD DISPATCH AGAIN:
+        // Compiler check: Does 'Animal' have 'speak()'? Yes.
+        // Runtime check: What object is 'myPet' pointing to now? A Cat.
+        // JVM executes the Cat's overridden speak() method.
+        myPet.speak(); // Output: The cat meows: Meow!
+    }
+}
 ```
-**Your Predicted Output:**
-________________________________________________________________
-________________________________________________________________
-**Your Explanation:**
-________________________________________________________________
-________________________________________________________________
-________________________________________________________________
+---
+---
+
+### **(Insert this as Section 8 in the Inheritance notes)**
+
+### **8. Using `final` with Inheritance: Setting Boundaries**
+
+The `final` keyword is a non-access modifier that is used to apply restrictions. When used in the context of inheritance, it acts as a "stop sign," preventing further extension or modification down the hierarchy.
+
+#### **1. `final` Methods**
+
+When you declare a method as `final`, you are stating that this method's implementation is complete and **cannot be overridden** by any subclass.
+
+*   **Syntax:** `public final void myCriticalMethod() { ... }`
+*   **Why use it?**
+    *   **Security:** To prevent subclasses from altering a core, security-sensitive behavior. For example, a method that validates a user's credentials might be made `final`.
+    *   **To Guarantee Behavior:** To ensure that a specific method will always behave exactly as defined in the superclass, no matter what subclass is being used.
+
+**Program Example:**
+
+```java
+class SuperClass {
+    public void regularMethod() {
+        System.out.println("This method can be overridden.");
+    }
+
+    // This method's implementation is now locked.
+    public final void finalMethod() {
+        System.out.println("This is a final method and cannot be changed.");
+    }
+}
+
+class SubClass extends SuperClass {
+    @Override
+    public void regularMethod() {
+        System.out.println("Subclass has overridden this method.");
+    }
+
+    /*
+    @Override
+    public void finalMethod() { // COMPILE ERROR!
+        // error: finalMethod() in SubClass cannot override finalMethod() in SuperClass
+        //        overridden method is final
+        System.out.println("Trying to override...");
+    }
+    */
+}
+
+public class Main {
+    public static void main(String[] args) {
+        SubClass obj = new SubClass();
+        obj.regularMethod(); // Calls the subclass's version
+        obj.finalMethod();   // Calls the superclass's version (and cannot be changed)
+    }
+}
+```
+
+#### **2. `final` Classes**
+
+When you declare an entire class as `final`, you are stating that this class is complete and **cannot be extended** (subclassed). It is at the very end of its inheritance line.
+
+*   **Syntax:** `public final class MyFinalClass { ... }`
+*   **Why use it?**
+    *   **Immutability:** To create immutable classes. If a class is `final`, you can be certain that no subclass can be created to alter its state or behavior. The standard `String` and `Integer` classes in Java are `final` for this reason.
+    *   **Security:** To prevent system classes from being extended in a way that could compromise the system.
+
+**Program Example:**
+
+```java
+// This class is declared as final. No other class can inherit from it.
+final class ImmutablePoint {
+    private final int x;
+    private final int y;
+
+    public ImmutablePoint(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public int getX() {
+        return x;
+    }
+}
+
+/*
+// This will cause a COMPILE ERROR:
+// error: cannot inherit from final ImmutablePoint
+class SpecialPoint extends ImmutablePoint {
+    // ...
+}
+*/
+
+public class Main {
+    public static void main(String[] args) {
+        ImmutablePoint p = new ImmutablePoint(10, 20);
+        System.out.println("Point created at x = " + p.getX());
+    }
+}
+```
 
 ---
 
