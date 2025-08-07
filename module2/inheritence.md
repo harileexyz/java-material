@@ -428,68 +428,7 @@ Step 3: Child constructor is called.
 ---
 ---
 
-## **✍️ Inheritance Worksheet**
 
-**Name:** ___________________________
-**Roll No:** ___________________________
-
-### **Part A: Theory Questions**
-
-1.  What is the main purpose of inheritance in OOP?
-    ________________________________________________________________
-2.  Explain the difference between a superclass and a subclass.
-    ________________________________________________________________
-3.  What is the "is-a" test and why is it useful? Give one example where it applies and one where it does not.
-    ________________________________________________________________
-4.  Why does Java not support multiple inheritance with classes? What problem does it avoid?
-    ________________________________________________________________
-5.  What are the two primary uses of the `super` keyword in a subclass?
-    ________________________________________________________________
-
----
-
-### **Part B: Code Writing and Analysis**
-
-**❓ Q1. Create a Hierarchy**
-Design a simple three-level hierarchy (multilevel inheritance).
-1.  Create a base class `Device` with a `String brand` and a method `turnOn()`.
-2.  Create a subclass `Phone` that extends `Device`. Add a method `makeCall()`.
-3.  Create a subclass `Smartphone` that extends `Phone`. Add a method `browseInternet()`.
-4.  In a `main` method, create a `Smartphone` object and call all three methods (`turnOn()`, `makeCall()`, and `browseInternet()`) to show that it has inherited all behaviors.
-
-**❓ Q2. Analyze the Code**
-What will be the output of the following code? Explain why, step by step, focusing on the constructors and the `super` keyword.
-
-```java
-class A {
-    public A() {
-        System.out.println("Constructor of class A");
-    }
-}
-
-class B extends A {
-    public B() {
-        // super(); // Implicit call to parent constructor is here
-        System.out.println("Constructor of class B");
-    }
-}
-
-class C extends B {
-    public C() {
-        System.out.println("Constructor of class C");
-    }
-}
-
-public class Main {
-    public static void main(String[] args) {
-        C c_object = new C();
-    }
-}
-
----
----
-
-### **(Insert this as Section 7 in the Inheritance notes)**
 
 ### **7. Dynamic Method Dispatch: The Engine of Polymorphism**
 
@@ -570,10 +509,9 @@ public class Main {
     }
 }
 ```
----
----
 
-### **(Insert this as Section 8 in the Inheritance notes)**
+---
+---
 
 ### **8. Using `final` with Inheritance: Setting Boundaries**
 
@@ -669,6 +607,67 @@ public class Main {
     }
 }
 ```
+---
+---
+
+## **✍️ Inheritance Worksheet**
+
+**Name:** ___________________________
+**Roll No:** ___________________________
+
+### **Part A: Theory Questions**
+
+1.  What is the main purpose of inheritance in OOP?
+    ________________________________________________________________
+2.  Explain the difference between a superclass and a subclass.
+    ________________________________________________________________
+3.  What is the "is-a" test and why is it useful? Give one example where it applies and one where it does not.
+    ________________________________________________________________
+4.  Why does Java not support multiple inheritance with classes? What problem does it avoid?
+    ________________________________________________________________
+5.  What are the two primary uses of the `super` keyword in a subclass?
+    ________________________________________________________________
+
+---
+
+### **Part B: Code Writing and Analysis**
+
+**❓ Q1. Create a Hierarchy**
+Design a simple three-level hierarchy (multilevel inheritance).
+1.  Create a base class `Device` with a `String brand` and a method `turnOn()`.
+2.  Create a subclass `Phone` that extends `Device`. Add a method `makeCall()`.
+3.  Create a subclass `Smartphone` that extends `Phone`. Add a method `browseInternet()`.
+4.  In a `main` method, create a `Smartphone` object and call all three methods (`turnOn()`, `makeCall()`, and `browseInternet()`) to show that it has inherited all behaviors.
+
+**❓ Q2. Analyze the Code**
+What will be the output of the following code? Explain why, step by step, focusing on the constructors and the `super` keyword.
+
+```java
+class A {
+    public A() {
+        System.out.println("Constructor of class A");
+    }
+}
+
+class B extends A {
+    public B() {
+        // super(); // Implicit call to parent constructor is here
+        System.out.println("Constructor of class B");
+    }
+}
+
+class C extends B {
+    public C() {
+        System.out.println("Constructor of class C");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        C c_object = new C();
+    }
+}
+
 
 ---
 
