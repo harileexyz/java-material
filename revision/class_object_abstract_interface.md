@@ -477,3 +477,85 @@ public class Main {
 }
 ```
 ---
+---
+
+## **Quick Revision Guide: The Four Pillars of OOP**
+
+Today, we'll quickly revise the four fundamental concepts—the "pillars"—that every Object-Oriented language is built upon. Understanding these ideas is key to thinking like an OOP developer.
+
+### **The Four Pillars**
+1.  **Encapsulation** (The Data Locker)
+2.  **Abstraction** (The Simple Interface)
+3.  **Inheritance** (The Family Trait)
+4.  **Polymorphism** (The Shape-shifter)
+
+Let's look at each one.
+
+---
+
+### **1. Encapsulation (The Data Locker)**
+
+*   **What is it?**
+    Encapsulation is the bundling of **data (attributes)** and the **methods (behavior)** that operate on that data into a single, self-contained unit called a **class**. A crucial part of this is **data hiding**—protecting the internal data from outside interference.
+
+*   **Why do we need it?**
+    *   **Security & Control:** It prevents other parts of the program from accidentally or maliciously corrupting an object's data. You control exactly how the data can be changed by forcing access through public methods (getters and setters), where you can add validation logic.
+    *   **Simplicity:** The user of your class doesn't need to worry about the internal variables; they only interact with the simple, public methods you provide.
+
+*   **Analogy to Remember:** A **Capsule Pill**.
+    *   The medicine powder is the **private data**.
+    *   The plastic casing is the **class**.
+    *   You don't interact with the powder directly. You use the whole capsule (the **public methods**) to get the job done. The casing protects the medicine from the outside world.
+
+*   **In a Nutshell:** Encapsulation means protecting your data inside a "capsule" and providing safe, public methods to interact with it.
+
+---
+
+### **2. Abstraction (The Simple Interface)**
+
+*   **What is it?**
+    Abstraction means hiding the complex, internal implementation details and showing **only the essential features** to the outside world. It's about focusing on the **"What"** an object does, not the **"How"** it does it.
+
+*   **Why do we need it?**
+    *   **Reduces Complexity:** It makes your systems easier to use. You don't need to know how a car's engine works to drive it; you just use the steering wheel, pedals, and gear stick.
+    *   **Makes Code Maintainable:** You can completely change the internal logic (the "how") of a method without breaking the code of anyone who uses it, as long as the essential interface (the "what") remains the same.
+
+*   **Analogy to Remember:** A **TV Remote Control**.
+    *   You see simple buttons like "Power", "Volume Up", and "Channel". These are the **essential features**.
+    *   The complex electronics, infrared signals, and circuitry inside are **hidden**. You don't need to know about them to use the remote successfully.
+
+*   **In a Nutshell:** Abstraction means providing a simple view of a complex system.
+
+---
+
+### **3. Inheritance (The Family Trait)**
+
+*   **What is it?**
+    Inheritance is a mechanism that allows a new class (a **subclass**) to acquire the attributes and methods of an existing class (a **superclass**). It creates an **"is-a"** relationship.
+
+*   **Why do we need it?**
+    *   **Code Reusability:** It's the ultimate "Don't Repeat Yourself" (DRY) principle. You can define common behaviors once in a superclass, and all subclasses will get them for free.
+    *   **Logical Structure:** It helps organize your code into a natural hierarchy, from general concepts to more specific ones.
+
+*   **Analogy to Remember:** **Genetics**.
+    *   A `Smartphone` **is a** `Phone`. It **inherits** all the basic features of a phone (like making calls) but adds its own unique features (like browsing the internet). It doesn't need to reinvent the "making calls" feature.
+
+*   **In a Nutshell:** Inheritance allows you to build new classes on top of existing ones, reusing code and creating a logical hierarchy.
+
+---
+
+### **4. Polymorphism (The Shape-shifter)**
+
+*   **What is it?**
+    Polymorphism means "many forms." It is the ability of a single method, variable, or object to take on different forms or behaviors depending on the context. The most powerful form is **Method Overriding**, which is enabled by inheritance.
+
+*   **Why do we need it?**
+    *   **Flexibility & Extensibility:** It allows you to write generic, simple code that can work with many different types of objects. You can add new subclasses to your system in the future, and your existing polymorphic methods will work with them automatically, without any changes.
+
+*   **Analogy to Remember:** The **"Speak" Command**.
+    *   Imagine you have a method `makeAnimalSpeak(Animal animal)`.
+    *   If you pass a `Dog` object to this method, it will print "Woof!".
+    *   If you pass a `Cat` object to the *exact same method*, it will print "Meow!".
+    *   The `makeAnimalSpeak` method is **polymorphic**—its behavior changes depending on the actual type of the `Animal` object it receives at runtime.
+
+*   **In a Nutshell:** Polymorphism allows one interface (like a method call) to control access to a whole class of actions.
