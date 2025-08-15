@@ -13,82 +13,108 @@ This module introduces the core structural elements of Object-Oriented Programmi
 4.  **Interfaces:** The Pure Contract
 
 ---
+---
 
 ### **1. Classes and Objects: The Foundation of OOP**
 
 #### **1.1. Detailed Description**
 
-In Java, a **class** is a **blueprint** or template that defines the state (attributes) and behavior (methods) for a type of object. A class is a logical construct; it doesn't exist in memory until you create an object from it.
+In Java, a **class** is a **blueprint** or template that defines the structure (state) and behavior (methods) for a type of object. It's a user-defined data type that acts as a plan for creating things. A class itself is a logical construct; it doesn't occupy memory as a tangible thing until you create an object from it.
 
 An **object** (also called an **instance**) is a concrete, physical entity created from a class blueprint. When an object is created, it gets its own block of memory and its own set of instance variables to store its unique state.
 
-**Analogy to Remember: The Cookie Cutter**
-*   **Class:** The **cookie cutter**. It defines the shape (e.g., a star) for all cookies made with it. The cutter itself is not a cookie.
-*   **Object:** An **actual cookie**. Each cookie you cut is a separate object. They all have the same shape, but each can have its own unique state (one might have sprinkles, another might be burnt).
+**Analogy to Remember: The Architectural Blueprint**
+*   **Class:** An **architect's blueprint for a house**. The blueprint is a detailed plan. It defines that any house built from it will have a specific number of rooms, windows, and doors. It also defines behaviors, like how doors can `open()` and `close()`. The blueprint itself is not a house you can live in.
+*   **Object:** An **actual, physical house** built using that blueprint. Each house is a separate object. Your house (`house1`) and your neighbor's house (`house2`) might be built from the exact same blueprint (class), but they are distinct entities. They have their own unique addresses, paint colors (state), and their doors open and close independently of each other.
 
-#### **1.2. Example: The `CookieCutter` Analogy in Code**
+#### **1.2. Example: The `HouseBlueprint` Analogy in Code**
 
-Let's model this exact analogy. Our `Cookie` class will be the blueprint.
+Let's model this exact analogy. Our `House` class will be the blueprint.
 
 ```java
-// File: Cookie.java
-// This is the blueprint (our Cookie Cutter).
-public class Cookie {
+// File: House.java
+// This is the blueprint for all House objects.
+public class House {
     // --- 1. Fields (State) ---
-    // Every cookie has these properties, but each can have different values.
-    String shape = "Star"; // All cookies from this cutter will be stars
-    String topping;
-    boolean isBurnt = false;
+    // Every house built from this blueprint will have these properties.
+    // Each house object will get its own set of these variables.
+    int numberOfWindows;
+    int numberOfRooms;
+    String streetAddress;
+    String paintColor;
+    boolean isDoorOpen = false; // The door is closed by default.
 
     // --- 2. Methods (Behavior) ---
-    // Actions a cookie can have.
-    public void decorate(String newTopping) {
-        this.topping = newTopping;
-        System.out.println("The " + this.shape + " cookie is now decorated with " + this.topping + ".");
+    // Actions a house "object" can perform.
+    public void openDoor() {
+        if (!isDoorOpen) {
+            this.isDoorOpen = true;
+            System.out.println("The door at " + this.streetAddress + " is now open.");
+        } else {
+            System.out.println("The door is already open.");
+        }
     }
 
-    public void bake() {
-        System.out.println("Baking the " + this.shape + " cookie...");
-        // Let's pretend some cookies get burnt
-        if (Math.random() > 0.5) {
-            this.isBurnt = true;
-            System.out.println("Oh no, it's burnt!");
+    public void closeDoor() {
+        if (isDoorOpen) {
+            this.isDoorOpen = false;
+            System.out.println("The door at " + this.streetAddress + " is now closed.");
+        } else {
+            System.out.println("The door is already closed.");
         }
+    }
+    
+    public void displayDetails() {
+        System.out.println("House Details -> Address: " + this.streetAddress + ", Color: " + this.paintColor + ", Rooms: " + this.numberOfRooms);
     }
 }
 ```
 
-#### **1.3. Live Practice Question: The `CookieCutter` Analogy**
+#### **1.3. Live Practice Question: The `HouseBlueprint` Analogy**
 
-**Question:** Now, let's use our `Cookie` blueprint to create some actual cookies (objects).
-1.  In a `main` method, create two different `Cookie` objects.
-2.  The first cookie should be decorated with "Sprinkles".
-3.  The second cookie should be decorated with "Chocolate Chips".
-4.  Bake both cookies and then print out the final state of each one to show they are separate and unique.
+**Question:** Now, let's play the role of a construction company and build some houses (objects) using our `House` blueprint.
+1.  In a `main` method, create two different `House` objects.
+2.  For the first house, set its `streetAddress` to "123 Java Lane", its `paintColor` to "Blue", and its `numberOfRooms` to 4.
+3.  For the second house, set its `streetAddress` to "456 Python St", its `paintColor` to "Green", and its `numberOfRooms` to 5.
+4.  Try to open the door of the first house. Then, try to open it again.
+5.  Display the details of both houses to show they are separate and unique.
 
 #### **Solution**
 ```java
 public class Main {
     public static void main(String[] args) {
-        System.out.println("--- Using the Cookie Cutter ---");
+        System.out.println("--- Starting construction based on the blueprint ---");
 
-        // Create the first Cookie object
-        Cookie cookie1 = new Cookie();
+        // Create the first House object
+        House house1 = new House();
+        house1.streetAddress = "123 Java Lane";
+        house1.paintColor = "Blue";
+        house1.numberOfRooms = 4;
+        house1.numberOfWindows = 8;
+
+        // Create a second, separate House object
+        House house2 = new House();
+        house2.streetAddress = "456 Python St";
+        house2.paintColor = "Green";
+        house2.numberOfRooms = 5;
+        house2.numberOfWindows = 10;
         
-        // Create a second, separate Cookie object
-        Cookie cookie2 = new Cookie();
+        System.out.println("\nOperating the doors...");
+        // This action only affects house1
+        house1.openDoor();
+        // Try opening it again
+        house1.openDoor();
+        // This action only affects house2
+        house2.closeDoor(); // The door is already closed
 
-        System.out.println("\nDecorating our cookies...");
-        cookie1.decorate("Sprinkles");
-        cookie2.decorate("Chocolate Chips");
+        System.out.println("\n--- Final Property Details ---");
+        house1.displayDetails();
+        System.out.println("Is the door at " + house1.streetAddress + " open? " + house1.isDoorOpen);
         
-        System.out.println("\nBaking time!");
-        cookie1.bake();
-        cookie2.bake();
-
-        System.out.println("\n--- Final Cookie Status ---");
-        System.out.println("Cookie 1: A " + cookie1.shape + " with " + cookie1.topping + ". Burnt: " + cookie1.isBurnt);
-        System.out.println("Cookie 2: A " + cookie2.shape + " with " + cookie2.topping + ". Burnt: " + cookie2.isBurnt);
+        System.out.println(); // Add a blank line for spacing
+        
+        house2.displayDetails();
+        System.out.println("Is the door at " + house2.streetAddress + " open? " + house2.isDoorOpen);
     }
 }
 ```
