@@ -342,122 +342,138 @@ public class Main {
 ```
 
 ---
+---
 
 ### **4. Interfaces: The Pure Contract**
 
 #### **4.1. Detailed Description**
 
-An **interface** is a **pure contract** or a **list of rules**. It only contains abstract method signatures. It defines a **"can-do"** relationship. Any class that `implements` an interface is making a promise to provide an implementation for all the methods in that contract.
+If an abstract class is an *incomplete blueprint*, an interface is a **pure contract** or a **list of rules**. It has no implementation details at all. It simply defines a set of method signatures that a class **must** implement if it claims to adhere to that interface.
 
-**Analogy to Remember: A USB Port**
-*   The **USB specification** is the **interface**. It defines the rules: a port must have a specific shape and must be able to `transferData()` and `providePower()`. It doesn't say *what kind of device* it is.
-*   A **`Pendrive`**, a **`Keyboard`**, and a **`Smartphone`** are all different classes that **implement** the `USB` interface. They are completely different, but you can plug any of them into the same USB port (a method that accepts the `USB` interface type) and it will work.
+An interface defines a **"can-do"** relationship. It doesn't care *what* an object is, only *what it is capable of doing*. It's about defining a common set of behaviors that can be implemented by completely unrelated classes.
 
-#### **4.2. Example: The `USB` Port Analogy in Code**
+**Analogy to Remember: A Restaurant Menu**
+*   **The `Menu` is the interface.** It is a contract that lists the dishes a kitchen **must** be able to prepare, for example: `prepareAppetizer()`, `prepareMainCourse()`, and `prepareDessert()`. The menu itself is just a piece of paper; it doesn't cook anything. It's just a promise of what can be done.
+*   An **`ItalianKitchen`** and a **`ChineseKitchen`** are two completely different, unrelated classes.
+*   However, both can choose to **implement** the `Menu` interface. This means the Italian kitchen must provide its versions of the dishes (e.g., Bruschetta, Pasta, Tiramisu), and the Chinese kitchen must provide its versions (e.g., Spring Rolls, Noodles, Lychee Ice Cream).
+*   A customer (a method) doesn't need to know the inner workings of each kitchen. They can just pick up any `Menu` and order a `prepareMainCourse()`, confident that they will get a valid dish, even though the actual dish will be different depending on which kitchen is cooking.
+
+#### **4.2. Example: The `Restaurant Menu` Analogy in Code**
+
 ```java
-// The contract: Anything that is a USB device MUST be able to connect and disconnect.
-interface USBDevice {
-    void connect();
-    void disconnect();
-    String getDeviceName();
+// File: Menu.java
+// The contract: Any kitchen that implements this menu MUST know how to prepare these three courses.
+interface Menu {
+    void prepareAppetizer();
+    void prepareMainCourse();
+    void prepareDessert();
 }
 
-// A Pendrive is a device that implements the USB contract.
-class Pendrive implements USBDevice {
+// File: ItalianKitchen.java
+// A class that promises to fulfill the Menu contract with Italian dishes.
+class ItalianKitchen implements Menu {
     @Override
-    public void connect() {
-        System.out.println("Pendrive connected. Storage is now available.");
+    public void prepareAppetizer() {
+        System.out.println("Italian Appetizer: Serving Bruschetta with fresh tomatoes.");
     }
     @Override
-    public void disconnect() {
-        System.out.println("Pendrive disconnected safely.");
+    public void prepareMainCourse() {
+        System.out.println("Italian Main Course: Serving Spaghetti Carbonara.");
     }
     @Override
-    public String getDeviceName() {
-        return "SanDisk 64GB Pendrive";
-    }
-}
-
-// A Keyboard is a completely different thing, but it also implements the USB contract.
-class Keyboard implements USBDevice {
-    @Override
-    public void connect() {
-        System.out.println("Keyboard connected. Ready to type.");
-    }
-    @Override
-    public void disconnect() {
-        System.out.println("Keyboard disconnected.");
-    }
-    @Override
-    public String getDeviceName() {
-        return "Logitech Wireless Keyboard";
+    public void prepareDessert() {
+        System.out.println("Italian Dessert: Serving Tiramisu.");
     }
 }
 
+// File: ChineseKitchen.java
+// A completely different class that also fulfills the same contract, but with Chinese dishes.
+class ChineseKitchen implements Menu {
+    @Override
+    public void prepareAppetizer() {
+        System.out.println("Chinese Appetizer: Serving Spring Rolls.");
+    }
+    @Override
+    public void prepareMainCourse() {
+        System.out.println("Chinese Main Course: Serving Hakka Noodles.");
+    }
+    @Override
+    public void prepareDessert() {
+        System.out.println("Chinese Dessert: Serving Lychee Ice Cream.");
+    }
+}
+
+// File: Main.java
 public class Main {
-    // This computer port method can accept ANY object, as long as it implements the USBDevice interface.
-    public static void plugIntoUSBSlot(USBDevice device) {
-        System.out.println("\n--- Plugging a new device into the USB slot ---");
-        System.out.println("Device found: " + device.getDeviceName());
-        device.connect();
-        // ... use the device ...
-        device.disconnect();
+    // This 'customer' method can work with ANY kitchen, as long as it follows the Menu contract.
+    // This demonstrates polymorphism with interfaces.
+    public static void serveFullCourseMeal(Menu kitchen) {
+        System.out.println("\n--- Serving a new customer ---");
+        kitchen.prepareAppetizer();
+        kitchen.prepareMainCourse();
+        kitchen.prepareDessert();
+        System.out.println("Enjoy your meal!");
     }
 
     public static void main(String[] args) {
-        USBDevice myPendrive = new Pendrive();
-        USBDevice myKeyboard = new Keyboard();
+        // We create objects of the concrete kitchen classes.
+        // We use the interface 'Menu' as the reference type.
+        Menu italianRestaurant = new ItalianKitchen();
+        Menu chineseRestaurant = new ChineseKitchen();
 
-        plugIntoUSBSlot(myPendrive);
-        plugIntoUSBSlot(myKeyboard);
+        // We pass different types of kitchens to the SAME method, and it just works.
+        serveFullCourseMeal(italianRestaurant);
+        serveFullCourseMeal(chineseRestaurant);
     }
 }
 ```
 
-#### **4.3. Live Practice Question: The USB `Mouse`**
+#### **4.3. Live Practice Question: The `MexicanKitchen`**
 
-**Question:** Let's add a new device to our USB system.
-1.  Create a new class `Mouse` that `implements` the `USBDevice` interface.
-2.  Implement all three required methods (`connect`, `disconnect`, `getDeviceName`). For `connect`, print "Mouse connected. Pointer is now active."
-3.  In your `main` method, create a `Mouse` object and pass it to the same `plugIntoUSBSlot()` method to prove that the method works with the new device without any changes.
+**Question:** A new Mexican restaurant is opening in our food court! Let's add it to our system.
+1.  Create a new class `MexicanKitchen` that `implements` the `Menu` interface.
+2.  Implement all three required methods (`prepareAppetizer`, `prepareMainCourse`, `prepareDessert`) with Mexican dishes (e.g., "Nachos", "Tacos", "Churros").
+3.  In your `main` method, create a `MexicanKitchen` object and pass it to the same `serveFullCourseMeal()` method to prove that the method works with the new kitchen without any changes.
 
 #### **Solution**
 ```java
-// (Assume the USBDevice interface and Pendrive/Keyboard classes from above exist)
+// (Assume the Menu interface and Italian/ChineseKitchen classes from above exist)
 
-class Mouse implements USBDevice {
+class MexicanKitchen implements Menu {
     @Override
-    public void connect() {
-        System.out.println("Mouse connected. Pointer is now active.");
+    public void prepareAppetizer() {
+        System.out.println("Mexican Appetizer: Serving Nachos with cheese and salsa.");
     }
     @Override
-    public void disconnect() {
-        System.out.println("Mouse disconnected.");
+    public void prepareMainCourse() {
+        System.out.println("Mexican Main Course: Serving Chicken Tacos.");
     }
     @Override
-    public String getDeviceName() {
-        return "HP Optical Mouse";
+    public void prepareDessert() {
+        System.out.println("Mexican Dessert: Serving Churros with chocolate sauce.");
     }
 }
 
 public class Main {
-    public static void plugIntoUSBSlot(USBDevice device) {
-        System.out.println("\n--- Plugging a new device into the USB slot ---");
-        System.out.println("Device found: " + device.getDeviceName());
-        device.connect();
-        device.disconnect();
+    public static void serveFullCourseMeal(Menu kitchen) {
+        System.out.println("\n--- Serving a new customer ---");
+        kitchen.prepareAppetizer();
+        kitchen.prepareMainCourse();
+        kitchen.prepareDessert();
+        System.out.println("Enjoy your meal!");
     }
 
     public static void main(String[] args) {
-        USBDevice myPendrive = new Pendrive();
-        USBDevice myKeyboard = new Keyboard();
+        Menu italianRestaurant = new ItalianKitchen();
+        Menu chineseRestaurant = new ChineseKitchen();
         
-        // Testing the new Mouse class
-        USBDevice myMouse = new Mouse();
+        // Testing the new MexicanKitchen class
+        Menu mexicanRestaurant = new MexicanKitchen();
 
-        plugIntoUSBSlot(myPendrive);
-        plugIntoUSBSlot(myKeyboard);
-        plugIntoUSBSlot(myMouse);
+        serveFullCourseMeal(italianRestaurant);
+        serveFullCourseMeal(chineseRestaurant);
+        serveFullCourseMeal(mexicanRestaurant);
     }
 }
 ```
+---
