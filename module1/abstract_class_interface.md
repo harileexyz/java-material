@@ -305,6 +305,210 @@ public class Application {
 *   Choose an **interface** when you want to define a role or capability that different classes can perform, regardless of where they are in the inheritance hierarchy.
 
 ---
+Of course. Based on the common patterns in academic exams, questions for this topic usually focus on definitions, differentiations, syntax, and applying the concepts to simple problems.
 
-### **5. Practice Questions & Solutions**
-*(The practice questions and solutions from the previous response would follow here, as they are relevant and test these concepts effectively.)*
+Here is a set of exam-style questions covering Classes, Abstract Classes, and Interfaces, complete with detailed answers.
+
+---
+---
+
+## **Exam-Style Practice Questions: Classes, Abstract Classes & Interfaces**
+
+### **Section A: Short Answer & Theory Questions (2-3 Marks Each)**
+
+**Q1: What is a class in Java? Explain with a simple analogy.**
+
+**Answer:**
+A class in Java is a blueprint or template for creating objects. It defines a set of attributes (fields) and behaviors (methods) that the objects created from it will share. A class is a logical construct that does not occupy memory until an object is created from it.
+
+**Analogy:** A class is like an architect's blueprint for a house. The blueprint itself is not a house, but it contains all the details (number of rooms, windows, etc.) needed to build multiple, physical houses (objects).
+
+---
+
+**Q2: Differentiate between a class and an object.**
+
+**Answer:**
+
+| Feature         | Class                                   | Object                                       |
+| :-------------- | :-------------------------------------- | :------------------------------------------- |
+| **Definition**  | A blueprint or template.                | An instance of a class.                      |
+| **Nature**      | A logical entity.                       | A physical entity that exists in memory.   |
+| **Memory**      | Does not occupy memory space.           | Occupies memory space in the heap.           |
+| **Creation**    | Declared once using the `class` keyword. | Created many times using the `new` keyword. |
+| **Example**     | The `Car` blueprint.                    | A specific red Honda Civic (`myCar`).      |
+
+---
+
+**Q3: What is a constructor? List two main rules for creating a constructor in Java.**
+
+**Answer:**
+A constructor is a special method in a class that is automatically called when an object of that class is created (using the `new` keyword). Its primary purpose is to initialize the object's instance variables to a valid starting state.
+
+The two main rules for creating a constructor are:
+1.  The constructor name must be **exactly the same** as the class name.
+2.  A constructor **cannot have a return type**, not even `void`.
+
+---
+
+**Q4: Can an abstract class have a constructor? Justify your answer.**
+
+**Answer:**
+Yes, an abstract class can have a constructor.
+
+**Justification:** Although you cannot create an object of an abstract class directly (e.g., `new MyAbstractClass()`), the abstract class still serves as a superclass for other concrete classes. When a subclass object is created, its constructor must call the superclass's constructor (either explicitly or implicitly via `super()`) as the first step in the constructor chain. Therefore, the abstract class needs a constructor to initialize its own fields that the subclass will inherit.
+
+---
+
+**Q5: What is an interface in Java? State its primary purpose.**
+
+**Answer:**
+An interface in Java is a purely abstract type that is used to specify a set of method signatures that a class must implement. It is a "contract" that defines a set of behaviors. An interface cannot be instantiated directly.
+
+**Primary Purpose:** Its primary purpose is to achieve **100% abstraction** and to provide a mechanism for **multiple inheritance** in Java. It defines a "can-do" relationship, allowing completely unrelated classes to share a common capability.
+
+---
+
+### **Section B: Differentiation Questions (4-5 Marks Each)**
+
+**Q6: Differentiate between an Abstract Class and an Interface. (Provide at least four key differences).**
+
+**Answer:**
+
+| Feature             | Abstract Class                                            | Interface                                                    |
+| :------------------ | :-------------------------------------------------------- | :----------------------------------------------------------- |
+| **Methods**         | Can have both **abstract** and **concrete** (implemented) methods. | Traditionally, only `public abstract` methods. (Java 8+ allows `default` and `static` methods with bodies). |
+| **Variables**       | Can have instance variables, static variables, and constants. | Can only have `public static final` constants.             |
+| **Inheritance**     | A class can `extends` only **one** abstract class.        | A class can `implements` **multiple** interfaces.          |
+| **Constructor**     | **Has a constructor** to initialize its fields, called via `super()`. | **Does not have a constructor.**                             |
+| **Purpose/Relationship** | To provide a common base for closely related classes (**is-a** relationship). | To define a contract or capability for unrelated classes (**can-do** relationship). |
+| **Access Modifiers**  | Members can be `public`, `protected`, `default`, or `private`. | Methods are `public` by default.                           |
+
+---
+
+### **Section C: Programming and Problem-Solving (5-10 Marks Each)**
+
+**Q7: Write a Java program to demonstrate the concept of an abstract class.**
+Create an abstract class `Machine` with a concrete method `turnOn()` that prints "Machine is turning on." and an abstract method `doWork()`. Create two subclasses, `WashingMachine` and `Blender`, that extend `Machine`. Implement the `doWork()` method in each subclass to print a message specific to its function (e.g., "Washing clothes." and "Blending smoothie."). In your `main` method, create objects of `WashingMachine` and `Blender` and call both methods on each.
+
+**Solution Q7:**
+
+```java
+// The abstract superclass
+abstract class Machine {
+    // Concrete method, shared by all subclasses
+    public void turnOn() {
+        System.out.println("Machine is turning on.");
+    }
+
+    // Abstract method, must be implemented by subclasses
+    public abstract void doWork();
+}
+
+// Concrete subclass 1
+class WashingMachine extends Machine {
+    @Override
+    public void doWork() {
+        System.out.println("Washing clothes...");
+    }
+}
+
+// Concrete subclass 2
+class Blender extends Machine {
+    @Override
+    public void doWork() {
+        System.out.println("Blending smoothie...");
+    }
+}
+
+// Main class to test the implementation
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("--- Operating the Washing Machine ---");
+        WashingMachine washer = new WashingMachine();
+        washer.turnOn(); // Calling inherited method
+        washer.doWork();   // Calling implemented method
+
+        System.out.println("\n--- Operating the Blender ---");
+        Blender blender = new Blender();
+        blender.turnOn();
+        blender.doWork();
+    }
+}
+```
+**Expected Output:**
+```
+--- Operating the Washing Machine ---
+Machine is turning on.
+Washing clothes...
+
+--- Operating the Blender ---
+Machine is turning on.
+Blending smoothie...
+```
+---
+
+**Q8: Write a Java program to demonstrate the use of an interface.**
+Create an interface `Lockable` with two methods: `lock()` and `unlock()`. Create two unrelated classes, `Door` and `Smartphone`, that both `implement` the `Lockable` interface.
+*   The `Door` class should print "Door is locked." and "Door is unlocked."
+*   The `Smartphone` class should print "Smartphone is locked with a PIN." and "Smartphone is unlocked."
+In your `main` method, create an array of `Lockable` objects to hold one `Door` and one `Smartphone`. Iterate through the array and call the `lock()` and `unlock()` methods on each object to demonstrate polymorphism.
+
+**Solution Q8:**
+```java
+// The interface contract
+interface Lockable {
+    void lock();
+    void unlock();
+}
+
+// First class that implements the contract
+class Door implements Lockable {
+    @Override
+    public void lock() {
+        System.out.println("Door is locked.");
+    }
+    @Override
+    public void unlock() {
+        System.out.println("Door is unlocked.");
+    }
+}
+
+// A completely different class that also implements the contract
+class Smartphone implements Lockable {
+    @Override
+    public void lock() {
+        System.out.println("Smartphone is locked with a PIN.");
+    }
+    @Override
+    public void unlock() {
+        System.out.println("Smartphone is unlocked.");
+    }
+}
+
+// Main class to test the implementation
+public class Main {
+    public static void main(String[] args) {
+        // Create an array of the interface type to hold different kinds of objects
+        Lockable[] items = new Lockable[2];
+        items[0] = new Door();
+        items[1] = new Smartphone();
+
+        // Loop through the items and operate on them via the interface
+        for (Lockable item : items) {
+            System.out.println("\nOperating on a " + item.getClass().getSimpleName() + ":");
+            item.lock();
+            item.unlock();
+        }
+    }
+}
+```
+**Expected Output:**
+```
+Operating on a Door:
+Door is locked.
+Door is unlocked.
+
+Operating on a Smartphone:
+Smartphone is locked with a PIN.
+Smartphone is unlocked.
+```
