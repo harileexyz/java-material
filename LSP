@@ -166,22 +166,127 @@ The solution is often to rethink the inheritance hierarchy.
 *   Don't force an "is-a" relationship where the behaviors don't match.
 *   Create a more generic base class or interface.
 
-**A Possible Fix for the Rectangle/Square Problem:**
-Instead of `Square extends Rectangle`, you could have a more abstract `Shape` interface.
+### **LSP-Compliant Design: `Shape` Hierarchy (Complete Code)**
+
+This example is structured in a single file to be easily compiled and run in any Java environment, including online compilers.
 
 ```java
+// Main.java - All classes in one file for easy testing.
+
+// --- 1. The Abstraction: A Common Contract for All Shapes ---
+// This interface defines the "contract" that all shapes must follow.
+// In this case, every shape must be able to calculate its area.
 interface Shape {
-    int getArea();
+    double getArea();
 }
 
+
+// --- 2. Concrete Implementation 1: The Rectangle Class ---
+// A Rectangle implements the Shape contract.
 class Rectangle implements Shape {
-    // ...
+    // A rectangle has its own distinct properties.
+    protected int width;
+    protected int height;
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    // Fulfilling the contract by providing an implementation for getArea().
+    @Override
+    public double getArea() {
+        return this.width * this.height;
+    }
 }
 
+
+// --- 3. Concrete Implementation 2: The Square Class ---
+// A Square ALSO implements the Shape contract. It does NOT extend Rectangle.
+// It is treated as its own distinct type of shape.
 class Square implements Shape {
-    int side;
-    public void setSide(int side) { this.side = side; }
-    public int getArea() { return side * side; }
+    // A square has its own property: a single side length.
+    protected int side;
+
+    public void setSide(int side) {
+        this.side = side;
+    }
+
+    // Fulfilling the contract by providing its own implementation for getArea().
+    @Override
+    public double getArea() {
+        return this.side * this.side;
+    }
+}
+
+
+// --- 4. The Main Class to Demonstrate the Correct Design ---
+public class Main {
+
+    public static void main(String[] args) {
+        
+        // --- Working with a Rectangle ---
+        System.out.println("--- Testing a Rectangle ---");
+        Rectangle rect = new Rectangle();
+        rect.setWidth(5);
+        rect.setHeight(4);
+        System.out.println("Rectangle Area: " + rect.getArea()); // Expected: 20.0
+
+        // --- Working with a Square ---
+        System.out.println("\n--- Testing a Square ---");
+        Square square = new Square();
+        square.setSide(5);
+        System.out.println("Square Area: " + square.getArea()); // Expected: 25.0
+
+        // --- Polymorphism with the Interface ---
+        // We can use the 'Shape' interface to refer to both objects.
+        // This is useful for creating collections or methods that work with any shape.
+        System.out.println("\n--- Demonstrating Polymorphism ---");
+        
+        Shape shape1 = new Rectangle();
+        // We must cast it back to a Rectangle to access Rectangle-specific methods
+        ((Rectangle) shape1).setWidth(10);
+        ((Rectangle) shape1).setHeight(5);
+
+        Shape shape2 = new Square();
+        // We cast it back to a Square to access its specific setSide method
+        ((Square) shape2).setSide(7);
+
+        printShapeArea(shape1); // Passes a Rectangle object
+        printShapeArea(shape2); // Passes a Square object
+    }
+
+    // A method that works with ANY object that implements the Shape interface.
+    public static void printShapeArea(Shape shape) {
+        // This method doesn't need to know if it's a Rectangle or a Square.
+        // It only knows it's a Shape and can therefore call getArea().
+        System.out.println("The area of the shape is: " + shape.getArea());
+    }
 }
 ```
-In this new design, `Square` and `Rectangle` are treated as distinct shapes that both fulfill the `Shape` contract. One does not pretend to be a substitute for the other, thus avoiding the LSP violation.
+
+### **Expected Output**
+```
+--- Testing a Rectangle ---
+Rectangle Area: 20.0
+
+--- Testing a Square ---
+Square Area: 25.0
+
+--- Demonstrating Polymorphism ---
+The area of the shape is: 50.0
+The area of the shape is: 49.0
+```
+
+### **Why This Design Follows LSP**
+
+1.  **No Incorrect Substitution:** The `Square` class no longer pretends to be a `Rectangle`. Therefore, you cannot substitute a `Square` into a method that has specific expectations about how a `Rectangle` behaves (like the `testArea` method in our previous "bad" example). This prevents the bug from ever occurring.
+
+2.  **Honors the Contract:** Both `Rectangle` and `Square` honor the simple contract of the `Shape` interface, which only promises that an area can be calculated via `getArea()`. They both fulfill this promise correctly.
+
+3.  **Clearer Code:** The code is now more explicit and honest. A `Square` has one property (`side`), and a `Rectangle` has two (`width`, `height`). The class structure accurately reflects reality, leading to less confusing code.
+
+4.  **Safe Polymorphism:** The `printShapeArea(Shape shape)` method is a perfect example of safe polymorphism. It only relies on the methods guaranteed by the `Shape` interface. It makes no assumptions about the underlying object's implementation, so it will work correctly with any new `Shape` we create in the future (e.g., `Circle`, `Triangle`), as long as they also implement the `Shape` interface.
