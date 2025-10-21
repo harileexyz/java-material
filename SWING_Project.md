@@ -1,9 +1,3 @@
-Excellent choice. A login flow is a far more realistic and engaging project. It naturally lends itself to separating concerns into different classes and provides a perfect opportunity to teach the Model-View-Controller (MVC) pattern in a clear, practical way.
-
-Here is a complete, extensive teaching guide to build a simple Login application, structured around the MVC pattern.
-
----
----
 
 ## **Live Project-Based Teaching Guide: Building a Login Application with MVC in Java Swing**
 
@@ -18,10 +12,6 @@ Here is a complete, extensive teaching guide to build a simple Login application
 ---
 
 ### **Part 1: Understanding the MVC Pattern for Our Login App**
-
-#### **Teaching Script - Introduction**
-
-"Today, we're building a complete, multi-screen login application. More importantly, we're going to build it the *right way*, using a famous design pattern called **Model-View-Controller**, or **MVC**. This pattern is used everywhere in software development, from desktop apps to web applications, because it keeps our code organized, clean, and easy to manage."
 
 "MVC separates our application into three distinct parts:"
 
@@ -38,19 +28,6 @@ Here is a complete, extensive teaching guide to build a simple Login application
 
 "Here’s how these three parts will communicate in our login app:"
 
-
-
-(You can draw this on a whiteboard or show this image).
-
-1.  **User interacts with `LoginView`** (types username/password, clicks "Login").
-2.  The **`LoginView` notifies the `LoginController`** about the button click.
-3.  The **`LoginController` gets the input data** (username/password) from the `LoginView`.
-4.  The **`LoginController` asks the `UserModel`** to `validateCredentials()`.
-5.  The **`UserModel` performs the business logic** (compares the input to the correct credentials) and returns `true` or `false`.
-6.  The **`LoginController` receives the result** from the Model.
-7.  Based on the result, the **`LoginController` tells the `LoginView`** to either show an error message OR it creates and shows the `HomeView`.
-
----
 
 ### **Part 2: Building the Project Step-by-Step in IntelliJ**
 
@@ -97,7 +74,6 @@ public class UserModel {
     }
 }
 ```
-**Teaching Point:** "Notice this class is pure Java. No Swing code. It has one job: validation. This is the Single Responsibility Principle in action."
 
 #### **Step 3: Creating the Views**
 
