@@ -1,7 +1,4 @@
-Of course. Here is a detailed set of notes covering the fundamentals of Java's GUI toolkits, focusing on the overview of AWT, the crucial comparison between Swing and AWT, and the key features that make Swing the preferred choice for modern desktop applications in Java.
 
----
----
 
 ## **End-to-End Study Guide: Java Swing Fundamentals**
 
