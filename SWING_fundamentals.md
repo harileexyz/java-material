@@ -1,7 +1,4 @@
-You are absolutely right. Seeing the definitions paired directly with concise code examples is essential for solidifying understanding. Here is the revised "cheat sheet," now including simple, targeted code snippets for each concept.
 
----
----
 
 ## **Quick Revision Guide: Swing & Event Handling with Code Examples**
 
