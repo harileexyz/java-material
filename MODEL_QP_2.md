@@ -296,60 +296,218 @@ public class GreeterApp {
 
 ---
 
-**Question 16:**
-> a) Draw an MVC diagram for this Swing+JDBC app.
-> b) Describe how you’d apply Dependency Inversion so the Controller can be unit-tested without a real database.
+Of course. Here is a complete, detailed answer for Question 16(b), including a formal definition of the Dependency Inversion Principle and the full, refactored code to demonstrate its application for unit testing.
 
-**Answer (a): MVC Diagram**
-(This would be a hand-drawn or digitally created diagram in an exam)
+---
+---
 
-**Diagram Description:**
-*   **View:** The `GreeterApp` class containing the `JFrame`, `JTextField`, `JButton`, and `JLabel`. It knows nothing about the database. Its job is to display components and report button clicks.
-*   **Controller:** The `ActionListener` implementations. They listen for events from the View.
-*   **Model:** The database itself, accessed via JDBC code. The Controller communicates directly with the database to perform the `INSERT` operation.
+**Question 16 (b):**
+> Describe how you’d apply Dependency Inversion so the Controller can be unit-tested without a real database.
 
-*(A simple diagram would show arrows: User -> View -> Controller -> Model, and then Controller -> View for updates.)*
+### **Answer**
 
-**Answer (b): Applying Dependency Inversion**
-To apply the Dependency Inversion Principle (DIP), we need to decouple the Controller from the concrete JDBC implementation. We can do this by introducing an interface.
+#### **1. Definition of the Dependency Inversion Principle (DIP)**
 
-1.  **Create an Abstraction (Interface):** Create an interface `GreetingRepository`.
-    ```java
-    public interface GreetingRepository {
-        void saveName(String name) throws SQLException;
-    }
-    ```
-2.  **Create a Concrete Implementation:** Create a class `JdbcGreetingRepository` that implements this interface and contains the actual JDBC code.
-    ```java
-    public class JdbcGreetingRepository implements GreetingRepository {
-        @Override
-        public void saveName(String name) throws SQLException {
-            // All the JDBC code to connect and insert goes here...
-        }
-    }
-    ```
-3.  **Refactor the Controller:** The `ActionListener` (our Controller) will now depend on the `GreetingRepository` interface, not the concrete JDBC class. The specific implementation will be "injected" into it.
-    ```java
-csharp
-    // Inside the ActionListener for the Save button:
-    GreetingRepository repository = new JdbcGreetingRepository(); // The dependency
-    try {
-        repository.saveName(name); // The controller calls the interface method
-        // ... show success message
-    } catch (SQLException ex) {
-        // ... show error message
-    }
-    ```
+The Dependency Inversion Principle is one of the five SOLID principles of Object-Oriented Design. It states two things:
 
-**How this enables unit-testing:**
-For testing, we can now create a **"mock" or "fake"** implementation of the `GreetingRepository` interface that does not connect to a real database.
+1.  **High-level modules should not depend on low-level modules. Both should depend on abstractions (e.g., interfaces).**
+2.  **Abstractions should not depend on details. Details (concrete implementations) should depend on abstractions.**
+
+**In simpler terms:** Don't let your important business logic (high-level module, like a controller) be tightly coupled to specific, concrete implementation details (low-level module, like a `MySQLDatabase` class). Instead, make your business logic depend on an interface. This "inverts" the dependency—instead of `High-level -> Low-level`, the relationship becomes `High-level -> Interface <- Low-level`.
+
+This decoupling allows you to easily swap out the low-level implementation (e.g., from a real database to a mock database for testing) without changing the high-level module at all.
+
+#### **2. Applying Dependency Inversion to the GreeterApp**
+
+To make our Swing `ActionListener` (the Controller) unit-testable without a real database, we will apply DIP in three steps:
+
+**Step 1: Create an Abstraction (Interface)**
+First, we define an interface that represents the "contract" for what our data storage mechanism must be able to do. This is our abstraction.
+
 ```java
-public class MockGreetingRepository implements GreetingRepository {
+// File: GreetingRepository.java
+import java.sql.SQLException;
+
+/**
+ * An interface that defines the contract for saving greetings.
+ * This is our ABSTRACTION.
+ */
+public interface GreetingRepository {
+    void saveName(String name) throws SQLException;
+}
+```
+
+**Step 2: Create Concrete Implementations (The Details)**
+Next, we create concrete classes that "depend on the abstraction" by implementing the interface.
+
+**a) The Real Database Implementation:** This class contains the actual JDBC code.
+
+```java
+// File: JdbcGreetingRepository.java
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+/**
+ * A concrete implementation that saves data to a real MySQL database.
+ * This is a LOW-LEVEL DETAIL.
+ */
+public class JdbcGreetingRepository implements GreetingRepository {
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/mydatabase";
+    private static final String DB_USER = "root";
+    private static final String DB_PASSWORD = "password";
+
     @Override
-    public void saveName(String name) {
-        // No database connection! Just pretend it worked.
-        System.out.println("Mock save successful for name: " + name);
+    public void saveName(String name) throws SQLException {
+        String sql = "INSERT INTO greetings (name) VALUES (?)";
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, name);
+            pstmt.executeUpdate();
+        }
     }
 }
 ```
-In our unit test, we can give the Controller the `MockGreetingRepository` instead of the real one. This allows us to test the Controller's logic (e.g., does it correctly show a success message?) **without needing a database connection**, making the test fast, reliable, and isolated. This is the power of Dependency Inversion.
+
+**b) The Mock Implementation for Testing:** This "fake" class implements the same interface but doesn't connect to a database. It's used for unit testing.
+
+```java
+// File: MockGreetingRepository.java
+
+import java.sql.SQLException;
+
+/**
+ * A "mock" implementation for testing purposes. It does not use a real database.
+ * This is another LOW-LEVEL DETAIL used for testing.
+ */
+public class MockGreetingRepository implements GreetingRepository {
+    @Override
+    public void saveName(String name) throws SQLException {
+        // No database connection! Just pretend it worked and print to console.
+        if (name.equals("fail")) {
+            throw new SQLException("Simulated database failure.");
+        }
+        System.out.println("MockGreetingRepository: Successfully 'saved' name -> " + name);
+    }
+}
+```
+
+**Step 3: Refactor the GUI to Depend on the Abstraction**
+Finally, we modify our main `GreeterApp` class. The `ActionListener` (Controller) will now hold a reference to the `GreetingRepository` interface. The specific implementation (real or mock) will be "injected" into it.
+
+```java
+// File: GreeterApp.java (Refactored)
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
+
+public class GreeterApp extends JFrame {
+    // The Controller (ActionListener) now depends on the INTERFACE, not a concrete class.
+    private final GreetingRepository repository;
+    
+    private JTextField nameField;
+    private JLabel resultLabel;
+
+    public GreeterApp(GreetingRepository repository) {
+        this.repository = repository; // The dependency is "injected" here.
+        
+        // --- GUI Setup ---
+        setTitle("Greeter App");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(400, 200);
+        setLayout(new FlowLayout(FlowLayout.CENTER, 10, 20));
+
+        nameField = new JTextField(15);
+        JButton greetButton = new JButton("Greet");
+        JButton clearButton = new JButton("Clear");
+        JButton saveButton = new JButton("Save to DB");
+        resultLabel = new JLabel("Enter your name and click a button.");
+
+        add(new JLabel("Name:"));
+        add(nameField);
+        add(greetButton);
+        add(clearButton);
+        add(saveButton);
+        add(resultLabel);
+        
+        // --- Event Handling ---
+        greetButton.addActionListener(e -> greetUser());
+        clearButton.addActionListener(e -> clearFields());
+        saveButton.addActionListener(e -> saveUser());
+    }
+
+    private void greetUser() {
+        String name = nameField.getText();
+        resultLabel.setText(name.isEmpty() ? "Please enter a name!" : "Hello, " + name + "!");
+    }
+
+    private void clearFields() {
+        nameField.setText("");
+        resultLabel.setText("Enter your name and click a button.");
+    }
+    
+    // This is our Controller's logic
+    private void saveUser() {
+        String name = nameField.getText();
+        if (name.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Name cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            // The Controller calls the interface method, unaware of the implementation.
+            repository.saveName(name);
+            JOptionPane.showMessageDialog(this, "Name '" + name + "' saved successfully!");
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Database error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public static void main(String[] args) {
+        // --- To run the REAL application, we inject the REAL database repository ---
+        GreetingRepository realRepository = new JdbcGreetingRepository();
+        
+        SwingUtilities.invokeLater(() -> {
+            GreeterApp app = new GreeterApp(realRepository);
+            app.setVisible(true);
+        });
+    }
+}
+```
+
+#### **3. How This Enables Unit-Testing**
+
+With the Dependency Inversion Principle applied, our Controller (the logic within the `saveUser` method and its listeners) is now completely decoupled from the real database. We can now write a simple unit test for it without needing a database connection.
+
+A unit test (using a framework like JUnit) would look like this:
+
+```java
+// This is a conceptual unit test, not part of the main application.
+class GreeterAppTest {
+    
+    // A test method.
+    public void testSaveUser_Success() {
+        // 1. Setup: Create a MOCK repository, not a real one.
+        GreetingRepository mockRepo = new MockGreetingRepository();
+        
+        // 2. Create the GUI, injecting the MOCK dependency.
+        GreeterApp testApp = new GreeterApp(mockRepo);
+        
+        // 3. Action: Simulate user input and button click.
+        testApp.nameField.setText("TestUser");
+        testApp.saveButton.doClick();
+        
+        // 4. Assert: Check if the outcome was as expected.
+        // In a real test, we would check if a success dialog was shown.
+        // For this example, we rely on the console output from the mock object:
+        // "MockGreetingRepository: Successfully 'saved' name -> TestUser"
+        // This proves the controller logic works without ever touching a database.
+    }
+}
+```
+
+By applying DIP, we have made our high-level controller logic independent of low-level data access details, making it robust, flexible, and, most importantly, **testable in isolation**.
