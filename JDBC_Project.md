@@ -1,13 +1,6 @@
-Excellent idea. Re-implementing the login application with a real database connection using JDBC is the perfect way to teach this topic. It transforms the project from a simple GUI demonstration into a complete, end-to-end application, clearly showing the role of JDBC in connecting a Java application to a database.
 
-Here is a comprehensive teaching guide to refactor the Swing Login App to use JDBC. This guide assumes you and your students will be using a simple database like **MySQL** or **SQLite**. I'll provide the instructions primarily for **MySQL**, as it's very common, but I'll add notes for SQLite as it's simpler to set up (just a single file, no server needed).
-
----
----
 
 ## **Live Project-Based Guide: Building a Database-Driven Login App with JDBC**
-
-**Objective:** To teach the fundamentals of JDBC by connecting our Swing Login Application to a real database to validate user credentials.
 
 **Prerequisites:**
 1.  A database server installed (e.g., MySQL).
@@ -18,10 +11,6 @@ Here is a comprehensive teaching guide to refactor the Swing Login App to use JD
 ---
 
 ### **Part 1: JDBC Fundamentals - The Theory**
-
-#### **Teaching Script - Introduction**
-
-"So far, our login application works, but it has a huge flaw: the username and password are hardcoded. In a real application, user data is stored in a database. Today, we're going to learn how to connect our Java application to a database using **JDBC**."
 
 "**What is JDBC?**"
 *   **JDBC** stands for **Java Database Connectivity**.
@@ -199,4 +188,4 @@ public class UserModel {
     *   Enter wrong credentials (`admin` / `password`). Click Login. It should show the "Invalid username or password" error.
     *   Enter the correct credentials from your database (`btech` / `java`). Click Login. The login window should close, and the "Welcome, btech!" home screen should appear.
 
-**Conclusion:** "Congratulations! You have now built a complete, end-to-end Java application that connects a Swing GUI to a MySQL database using JDBC, all while following the professional MVC design pattern."
+
