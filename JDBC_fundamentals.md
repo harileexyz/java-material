@@ -1,7 +1,4 @@
-Of course. Here is a concise, exam-focused revision guide for JDBC fundamentals. It provides clear definitions, code snippets, and explanations tailored for answering 2 or 3-mark questions, and also covers the core concepts needed for practical lab exams or project development.
 
----
----
 
 ## **Quick Revision Guide: JDBC Fundamentals**
 
