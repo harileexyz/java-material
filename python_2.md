@@ -1,7 +1,4 @@
-Of course. Here is the continuation of the extensive OOP in Python study guide, picking up with Inheritance.
 
----
----
 
 ### **4. Inheritance: Structuring Classes with "Is-A" Relationships**
 
