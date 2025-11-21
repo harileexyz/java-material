@@ -152,9 +152,6 @@ This is a convenience feature where Java automatically converts between primitiv
     int myInt = myInteger; // Unboxing: Java is secretly doing myInteger.intValue();
     ```
 
----
-```
-
 ## **End-to-End Study Guide: Core Object-Oriented Programming (OOP)**
 
 This module explains the fundamental principles that define Object-Oriented Programming and how they are implemented in Java.
