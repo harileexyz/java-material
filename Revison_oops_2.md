@@ -757,61 +757,298 @@ You would refactor it using an interface or an abstract class.
 
 ---
 
-### **3. L - Liskov Substitution Principle (LSP)**
 
-*   **The Rule:** Subtypes must be substitutable for their base types without altering the correctness of the program.
-*   **In Simple Terms:** A subclass object should be able to replace its parent class object without causing any errors. The child class should honor the "contract" of the parent class.
-*   **Why?** If a subclass breaks this principle, it can lead to subtle and unpredictable bugs. Polymorphism relies on the ability to treat a child object as if it were a parent object.
+---
+---
 
-*   **Analogy: A Remote Control and its Replacement**
-    *   You have a simple TV remote (parent class) with a "Power" button. It turns the TV on and off.
-    *   You buy a new, advanced remote (subclass) for the same TV. It has all the old buttons plus new ones. This new remote is a valid substitute. The "Power" button still turns the TV on and off. It honors the parent's contract.
-    *   **Violation:** If the "Power" button on the new remote instead muted the volume, it would be a bad substitute. It breaks the expected behavior, violating LSP.
+### **A Deep Dive: The Liskov Substitution Principle (LSP)**
 
-#### **Example: The `Bird` Problem**
+#### **1. The Formal Definition**
 
-A classic example of an LSP violation.
-```java
-class Bird {
-    public void fly() { System.out.println("Bird is flying."); }
-}
+First, let's look at the formal definition by Barbara Liskov:
+> "Let Φ(x) be a property provable about objects x of type T. Then Φ(y) should be true for objects y of type S where S is a subtype of T."
 
-// An Ostrich IS-A Bird, so inheritance seems correct...
-class Ostrich extends Bird {
-    @Override
-    public void fly() {
-        // ...but an Ostrich cannot fly!
-        throw new UnsupportedOperationException("Ostriches can't fly!");
-    }
-}
+**Translation into Plain English:**
+This definition is quite academic. In simpler programming terms, it means:
 
-public class Main {
-    public static void letTheBirdFly(Bird bird) {
-        bird.fly();
-    }
+> **Objects of a superclass should be replaceable with objects of its subclasses without breaking the application.**
 
-    public static void main(String[] args) {
-        Bird sparrow = new Bird();
-        Bird ostrich = new Ostrich();
-        
-        letTheBirdFly(sparrow); // This works fine.
-        letTheBirdFly(ostrich); // This will CRASH the program!
-    }
-}
-```
-**Conclusion:** An `Ostrich` is not a substitutable `Bird` in this model, because it breaks the `fly()` contract. The inheritance hierarchy is wrong. A better design would be to have a `Bird` class and a separate `FlyingBird` subclass that has the `fly()` method.
+In other words, if you have a piece of code that works correctly with a `Parent` object, it must also work correctly and predictably with a `Child` object. The `Child` must be a perfect, "behaviorally compatible" substitute for the `Parent`.
 
-#### **Practice Question (LSP)**
+#### **2. The Core Idea: The "Behavioral" Contract**
 
-You have a class `File` with methods `read()` and `write()`. You create a subclass `ReadOnlyFile` that extends `File`. To enforce the read-only rule, you override the `write()` method to throw an exception. Does this design follow the Liskov Substitution Principle? Why or why not?
+Inheritance is often taught as an "is-a" relationship, which is a great start. A `Square` *is a* `Rectangle`. A `Penguin` *is a* `Bird`. This is structurally true. However, LSP goes a step further and says that inheritance must also be about **behavioral subtyping**.
 
-#### **Solution**
-No, this design **violates** the Liskov Substitution Principle.
+The subclass must not just inherit the methods of the parent; it must **honor the contract and behavior** of those methods. It can *extend* the behavior (add more functionality), but it cannot *violate* the parent's core assumptions or produce unexpected side effects.
 
-**Reasoning:** A piece of code that works with a generic `File` object expects to be able to call the `write()` method without the program crashing. By substituting a `ReadOnlyFile` object, which throws an exception on `write()`, you are changing the expected behavior and breaking the "contract" of the parent `File` class. The subclass is not a valid substitute for the parent in all contexts.
+**What does the "contract" include?**
+*   **Method Signatures:** The child method must have the same name and parameters.
+*   **Return Types:** The child method's return type must be the same as or a subtype of the parent's return type.
+*   **Exceptions:** The child method should not throw new checked exceptions that the parent method does not declare.
+*   **Preconditions (what must be true *before* the method runs):** The child method cannot strengthen the preconditions. It must accept at least everything the parent method accepts.
+*   **Postconditions (what must be true *after* the method runs):** The child method cannot weaken the postconditions. It must deliver at least what the parent promises to deliver.
+
+The last two points are the most subtle and are where most LSP violations occur.
+
+#### **3. Analogy: The Substitute Teacher**
+
+Let's use a clear, real-world analogy to understand this.
+
+*   **The Superclass:** Your regular Math teacher, **Mr. Sharma**. The school (your program) has a contract with him.
+    *   **Contract/Behavior:** When you ask Mr. Sharma a math question (`askQuestion()`), he will provide a correct mathematical answer. He will not sing a song or assign English homework.
+*   **The Subclass:** A substitute teacher, **Ms. Davis**. She is also a `Teacher`, so she seems like a valid substitute.
+
+*   **Scenario 1: LSP is Followed**
+    *   Ms. Davis is also a qualified math teacher. When students ask her a math question (`askQuestion()`), she provides a correct mathematical answer, just like Mr. Sharma. Her teaching style might be slightly different (extending the behavior), but she fulfills the core contract.
+    *   **Result:** The classroom continues to function correctly. Ms. Davis is a valid substitute for Mr. Sharma.
+
+*   **Scenario 2: LSP is Violated**
+    *   Ms. Davis is actually a history teacher who was assigned to the math class by mistake.
+    *   When students ask her a math question (`askQuestion()`), she gets confused and either:
+        1.  Gives a wrong answer.
+        2.  Throws an "exception" by saying, "I can't answer that, I'm a history teacher!" and refuses to proceed.
+        3.  Changes the subject entirely and starts talking about historical events (an unexpected side effect).
+    *   **Result:** The classroom breaks down. The students get confused, and the learning process fails. Ms. Davis is **not a valid substitute** for Mr. Sharma because she violates the behavioral contract of a "Math Teacher".
+
+**Key Takeaway:** Just because something structurally fits the "is-a" relationship doesn't mean it's a correct substitute behaviorally.
 
 ---
 
+#### **4. The Classic Code Example: Rectangle vs. Square**
+
+This is the most famous example used to demonstrate an LSP violation. It highlights how a seemingly logical inheritance structure can be behaviorally incorrect.
+
+**The Setup:**
+Mathematically, a square *is a* rectangle. So, let's model this with inheritance.
+
+```java
+// The Superclass
+class Rectangle {
+    protected int width;
+    protected int height;
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getArea() {
+        return this.width * this.height;
+    }
+}
+```
+**The `Rectangle`'s Behavioral Contract:**
+The `Rectangle` class has an implicit behavioral contract:
+1.  Setting the width **only** affects the width.
+2.  Setting the height **only** affects the height.
+
+**The Subclass (The LSP Violator):**
+Now let's create a `Square` subclass. To maintain the property of a square (where width always equals height), we must override the setters.
+
+```java
+class Square extends Rectangle {
+    @Override
+    public void setWidth(int width) {
+        // To maintain the square's integrity, we must change both sides.
+        this.width = width;
+        this.height = width;
+    }
+
+    @Override
+    public void setHeight(int height) {
+        // To maintain the square's integrity, we must change both sides.
+        this.width = height;
+        this.height = height;
+    }
+}
+```
+Here, the `Square` class **violates the behavioral contract** of the `Rectangle`. Setting the width now has an unexpected side effect: it also changes the height.
+
+**The Client Code That Breaks:**
+Now, let's write a piece of code (a "client") that works perfectly fine with a `Rectangle` but breaks when we substitute a `Square`.
+
+```java
+public class AreaCalculator {
+    
+    // This method has an expectation based on the Rectangle's behavior.
+    public static void testArea(Rectangle r) {
+        System.out.println("--- Testing a new shape ---");
+        r.setWidth(5);
+        r.setHeight(4);
+        
+        // The core assumption: The area should be width * height = 5 * 4 = 20.
+        int expectedArea = 20;
+        int actualArea = r.getArea();
+        
+        System.out.println("Expected Area: " + expectedArea);
+        System.out.println("Actual Area: " + actualArea);
+        
+        if (expectedArea == actualArea) {
+            System.out.println("Test Passed! The object behaves like a Rectangle.");
+        } else {
+            System.out.println("Test FAILED! This object does NOT behave like a Rectangle.");
+        }
+    }
+
+    public static void main(String[] args) {
+        Rectangle rect = new Rectangle();
+        testArea(rect); // This will pass.
+
+        Square square = new Square();
+        testArea(square); // This will fail! We have substituted a child for a parent, and it broke the program.
+    }
+}
+```
+
+**Trace of the `testArea(square)` call:**
+1.  `r.setWidth(5);` -> The `Square`'s override is called. `width` becomes 5, and `height` also becomes 5.
+2.  `r.setHeight(4);` -> The `Square`'s override is called. `height` becomes 4, and `width` also becomes 4.
+3.  `r.getArea()` is called. It calculates `width * height`, which is now `4 * 4 = 16`.
+4.  The `actualArea` is 16, which does not equal the `expectedArea` of 20. The test fails.
+
+**Conclusion:** The `Square` object is not a valid substitute for a `Rectangle` object because it changes the fundamental behavior expected by the client code. This is a clear violation of LSP.
+
+#### **5. How to Fix an LSP Violation**
+
+The solution is often to rethink the inheritance hierarchy.
+*   Don't force an "is-a" relationship where the behaviors don't match.
+*   Create a more generic base class or interface.
+
+### **LSP-Compliant Design: `Shape` Hierarchy (Complete Code)**
+
+This example is structured in a single file to be easily compiled and run in any Java environment, including online compilers.
+
+```java
+// Main.java - All classes in one file for easy testing.
+
+// --- 1. The Abstraction: A Common Contract for All Shapes ---
+// This interface defines the "contract" that all shapes must follow.
+// In this case, every shape must be able to calculate its area.
+interface Shape {
+    double getArea();
+}
+
+
+// --- 2. Concrete Implementation 1: The Rectangle Class ---
+// A Rectangle implements the Shape contract.
+class Rectangle implements Shape {
+    // A rectangle has its own distinct properties.
+    protected int width;
+    protected int height;
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    // Fulfilling the contract by providing an implementation for getArea().
+    @Override
+    public double getArea() {
+        return this.width * this.height;
+    }
+}
+
+
+// --- 3. Concrete Implementation 2: The Square Class ---
+// A Square ALSO implements the Shape contract. It does NOT extend Rectangle.
+// It is treated as its own distinct type of shape.
+class Square implements Shape {
+    // A square has its own property: a single side length.
+    protected int side;
+
+    public void setSide(int side) {
+        this.side = side;
+    }
+
+    // Fulfilling the contract by providing its own implementation for getArea().
+    @Override
+    public double getArea() {
+        return this.side * this.side;
+    }
+}
+
+
+// --- 4. The Main Class to Demonstrate the Correct Design ---
+public class Main {
+
+    public static void main(String[] args) {
+        
+        // --- Working with a Rectangle ---
+        System.out.println("--- Testing a Rectangle ---");
+        Rectangle rect = new Rectangle();
+        rect.setWidth(5);
+        rect.setHeight(4);
+        System.out.println("Rectangle Area: " + rect.getArea()); // Expected: 20.0
+
+        // --- Working with a Square ---
+        System.out.println("\n--- Testing a Square ---");
+        Square square = new Square();
+        square.setSide(5);
+        System.out.println("Square Area: " + square.getArea()); // Expected: 25.0
+
+        // --- Polymorphism with the Interface ---
+        // We can use the 'Shape' interface to refer to both objects.
+        // This is useful for creating collections or methods that work with any shape.
+        System.out.println("\n--- Demonstrating Polymorphism ---");
+        
+        Shape shape1 = new Rectangle();
+        // We must cast it back to a Rectangle to access Rectangle-specific methods
+        ((Rectangle) shape1).setWidth(10);
+        ((Rectangle) shape1).setHeight(5);
+
+        Shape shape2 = new Square();
+        // We cast it back to a Square to access its specific setSide method
+        ((Square) shape2).setSide(7);
+
+        printShapeArea(shape1); // Passes a Rectangle object
+        printShapeArea(shape2); // Passes a Square object
+    }
+
+    // A method that works with ANY object that implements the Shape interface.
+    public static void printShapeArea(Shape shape) {
+        // This method doesn't need to know if it's a Rectangle or a Square.
+        // It only knows it's a Shape and can therefore call getArea().
+        System.out.println("The area of the shape is: " + shape.getArea());
+    }
+}
+```
+
+### **Expected Output**
+```
+--- Testing a Rectangle ---
+Rectangle Area: 20.0
+
+--- Testing a Square ---
+Square Area: 25.0
+
+--- Demonstrating Polymorphism ---
+The area of the shape is: 50.0
+The area of the shape is: 49.0
+```
+
+### **Why This Design Follows LSP**
+
+1.  **No Incorrect Substitution:** The `Square` class no longer pretends to be a `Rectangle`. Therefore, you cannot substitute a `Square` into a method that has specific expectations about how a `Rectangle` behaves (like the `testArea` method in our previous "bad" example). This prevents the bug from ever occurring.
+
+2.  **Honors the Contract:** Both `Rectangle` and `Square` honor the simple contract of the `Shape` interface, which only promises that an area can be calculated via `getArea()`. They both fulfill this promise correctly.
+
+3.  **Clearer Code:** The code is now more explicit and honest. A `Square` has one property (`side`), and a `Rectangle` has two (`width`, `height`). The class structure accurately reflects reality, leading to less confusing code.
+
+4.  **Safe Polymorphism:** The `printShapeArea(Shape shape)` method is a perfect example of safe polymorphism. It only relies on the methods guaranteed by the `Shape` interface. It makes no assumptions about the underlying object's implementation, so it will work correctly with any new `Shape` we create in the future (e.g., `Circle`, `Triangle`), as long as they also implement the `Shape` interface.
 ### **4. I - Interface Segregation Principle (ISP)**
 
 *   **The Rule:** Clients should not be forced to depend on methods they do not use.
