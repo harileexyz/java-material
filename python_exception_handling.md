@@ -308,3 +308,178 @@ Score lookup complete.
 Error: Student 'Vikram' not found.
 Score lookup complete.
 ```
+
+Of course. Including a list of common built-in exceptions is crucial for students to recognize the types of errors they will encounter. Here is an expanded section that can be added to your study guide, detailing the most important Python exceptions and their uses.
+
+---
+---
+
+### **A Guide to Common Built-in Exceptions in Python**
+
+While Python has a large hierarchy of exceptions, you will encounter a specific set of them very frequently. Understanding what causes them is key to writing robust code and debugging effectively. All these exceptions inherit from the base `Exception` class.
+
+Here is a list of the most common exceptions, their causes, and code examples that would trigger them.
+
+---
+
+#### **1. `SyntaxError`**
+
+*   **What it is:** This is a special kind of error that occurs *before* your program even starts running. It's raised by the Python parser when it finds code that violates the language's grammar rules.
+*   **Common Causes:**
+    *   Missing colons (`:`) after `if`, `for`, `def`, or `class` statements.
+    *   Unmatched parentheses, brackets, or braces (`(`, `[`, `{`).
+    *   Incorrect indentation.
+    *   Misspelled keywords.
+*   **Example:**
+    ```python
+    # Missing colon after the if statement
+    if 5 > 3
+        print("Hello") 
+    # Output: SyntaxError: expected ':'
+    ```
+
+---
+
+#### **2. `IndentationError`**
+
+*   **What it is:** A subclass of `SyntaxError`. It occurs when a block of code is not indented correctly.
+*   **Common Causes:**
+    *   Inconsistent use of tabs and spaces.
+    *   Not indenting code that should be in a block (e.g., inside an `if` statement or a function).
+*   **Example:**
+    ```python
+    def my_function():
+    print("This line has incorrect indentation.")
+    # Output: IndentationError: expected an indented block
+    ```
+
+---
+
+#### **3. `NameError`**
+
+*   **What it is:** Raised when you try to use a variable or function name that has not been defined yet.
+*   **Common Causes:**
+    *   A typo in a variable name.
+    *   Forgetting to assign a value to a variable before using it.
+*   **Example:**
+    ```python
+    print(my_variable)
+    # Output: NameError: name 'my_variable' is not defined
+    ```
+
+---
+
+#### **4. `TypeError`**
+
+*   **What it is:** Raised when an operation or function is applied to an object of an inappropriate type.
+*   **Common Causes:**
+    *   Trying to add a string and a number (`"hello" + 5`).
+    *   Calling `len()` on a number (`len(123)`).
+    *   Passing the wrong number of arguments to a function.
+*   **Example:**
+    ```python
+    result = "hello" + 5
+    # Output: TypeError: can only concatenate str (not "int") to str
+    ```
+
+---
+
+#### **5. `ValueError`**
+
+*   **What it is:** Raised when an operation or function receives an argument that has the right type but an inappropriate value.
+*   **Common Causes:**
+    *   Trying to convert a non-numeric string to an integer (`int("abc")`).
+    *   Trying to find the index of a value that is not in a list (`my_list.index("unknown_value")`).
+*   **Example:**
+    ```python
+    age = int("twenty-five")
+    # Output: ValueError: invalid literal for int() with base 10: 'twenty-five'
+    ```
+
+---
+
+#### **6. `IndexError`**
+
+*   **What it is:** Raised when you try to access a sequence (like a list or a string) with an index that is out of bounds.
+*   **Common Causes:**
+    *   Forgetting that lists are zero-indexed.
+    *   Looping one element too far.
+*   **Example:**
+    ```python
+    my_list = ["apple", "banana", "cherry"]
+    print(my_list[3]) # The valid indices are 0, 1, and 2.
+    # Output: IndexError: list index out of range
+    ```
+
+---
+
+#### **7. `KeyError`**
+
+*   **What it is:** The dictionary equivalent of `IndexError`. It is raised when you try to access a key that does not exist in a dictionary.
+*   **Common Causes:**
+    *   A typo in the key name.
+    *   Assuming a key exists when it might not.
+*   **Example:**
+    ```python
+    student_scores = {"Ravi": 88, "Sunita": 92}
+    print(student_scores["Amit"])
+    # Output: KeyError: 'Amit'
+    ```
+    *   **Tip:** To avoid this, you can use the `.get()` method, which returns `None` (or a default value) if the key is not found: `print(student_scores.get("Amit"))`.
+
+---
+
+#### **8. `AttributeError`**
+
+*   **What it is:** Raised when you try to access or assign to an attribute or method that doesn't exist for an object.
+*   **Common Causes:**
+    *   A typo in a method or attribute name.
+    *   Trying to use a method from one data type on another (e.g., calling a string method on an integer).
+*   **Example:**
+    ```python
+    my_list = [1, 2, 3]
+    my_list.appendd(4) # Typo: should be 'append'
+    # Output: AttributeError: 'list' object has no attribute 'appendd'
+    ```
+
+---
+
+#### **9. `ZeroDivisionError`**
+
+*   **What it is:** Raised when the second argument of a division or modulo operation is zero.
+*   **Common Causes:**
+    *   Dividing a number by a variable that happens to be zero.
+*   **Example:**
+    ```python
+    result = 10 / 0
+    # Output: ZeroDivisionError: division by zero
+    ```
+
+---
+
+#### **10. `FileNotFoundError`**
+
+*   **What it is:** A subclass of `IOError`/`OSError`. It is raised when you try to open a file for reading that does not exist.
+*   **Common Causes:**
+    *   A typo in the filename or path.
+    *   The file is not in the expected directory.
+*   **Example:**
+    ```python
+    with open("non_existent_file.txt", "r") as f:
+        content = f.read()
+    # Output: FileNotFoundError: [Errno 2] No such file or directory: 'non_existent_file.txt'
+    ```
+
+---
+
+#### **11. `ImportError` / `ModuleNotFoundError`**
+
+*   **What it is:** Raised when the Python interpreter cannot find a module you are trying to import. `ModuleNotFoundError` is a more specific subclass of `ImportError`.
+*   **Common Causes:**
+    *   The module is not installed in your Python environment.
+    *   A typo in the module name.
+*   **Example:**
+    ```python
+    import non_existent_module
+    # Output: ModuleNotFoundError: No module named 'non_existent_module'
+    ```
